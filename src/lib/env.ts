@@ -40,7 +40,11 @@ export function getSiteUrl() {
 }
 
 export function getDataDir() {
-  return process.env.DATA_DIR ?? "./data";
+  if (process.env.DATA_DIR) return process.env.DATA_DIR;
+  // Sur Vercel, seul /tmp est inscriptible (et il n'est PAS persistant) :
+  // suffisant pour une démonstration en mode simulation, pas pour la production.
+  if (process.env.VERCEL) return "/tmp/fhs-data";
+  return "./data";
 }
 
 /** URL facultative vers laquelle transférer les messages des formulaires (webhook HTTPS). */

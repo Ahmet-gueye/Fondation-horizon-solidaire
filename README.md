@@ -149,7 +149,7 @@ Les dons et messages sont enregistrés en JSON dans `DATA_DIR` (par défaut `./d
 restreinte). Cela convient à un **serveur Node avec disque persistant** (VPS, conteneur avec volume, hébergeur
 Node managé). Pensez à sauvegarder ce dossier et à le protéger (il contient des données personnelles).
 
-Sur une plateforme « serverless » comme Vercel, le disque n'est pas persistant : remplacez `src/lib/store.ts`
+Sur une plateforme « serverless » comme Vercel, le disque n'est pas persistant (le site y écrit par défaut dans `/tmp`, ce qui suffit pour une démonstration en mode simulation, mais les données peuvent disparaître à tout moment) : remplacez `src/lib/store.ts`
 par une base de données (PostgreSQL, Turso/SQLite…) en gardant les mêmes fonctions `mutate` et `findOne`.
 Le limiteur de débit est en mémoire : derrière plusieurs instances, ajoutez une limite au niveau de l'hébergeur.
 
