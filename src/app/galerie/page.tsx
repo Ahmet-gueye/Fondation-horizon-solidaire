@@ -1,6 +1,7 @@
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { ExampleBadge, EmptyState, MediaSlot, Notice } from "@/components/Markers";
 import { PageHero } from "@/components/ui";
+import { Picture } from "@/components/Picture";
 import { galleryCategories, getGalleryItems, type GalleryItem } from "@/content/galerie";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
@@ -15,8 +16,7 @@ function Item({ item }: { item: GalleryItem }) {
   return (
     <figure className="reveal">
       {item.src && item.type === "photo" ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.src} alt={item.alt} loading="lazy" style={{ aspectRatio: "4 / 3", objectFit: "cover", width: "100%" }} />
+        <Picture image={{ src: item.src, alt: item.alt, isIllustration: item.isIllustration }} ratio="4 / 3" caption={false} />
       ) : item.src && item.type === "video" ? (
         <iframe src={item.src} title={item.alt} loading="lazy" allow="encrypted-media; picture-in-picture" allowFullScreen style={{ aspectRatio: "16 / 9", width: "100%", border: 0 }} />
       ) : (
@@ -24,11 +24,14 @@ function Item({ item }: { item: GalleryItem }) {
       )}
       <figcaption>
         <span className="row-wrap">
-          {item.isExample ? <ExampleBadge label="Emplacement" /> : null}
+          {item.isExample && !item.src ? <ExampleBadge label="Emplacement" /> : null}
           <span className="badge">{item.category}</span>
           {item.isIllustration && !item.isExample ? <span className="badge badge-sun">Illustration</span> : null}
         </span>
         <span>{item.caption}</span>
+        {item.author ? (
+          <span className="muted small">Photo : {item.page ? <a href={item.page} target="_blank" rel="noopener noreferrer">{item.author} / Unsplash</a> : item.author}. Ne représente pas une action de la fondation.</span>
+        ) : null}
         {item.place || item.date ? (
           <span className="muted small">{[item.place, item.date ? formatDate(item.date) : null].filter(Boolean).join(" · ")}</span>
         ) : null}
@@ -47,6 +50,7 @@ export default function GalleryPage() {
           <div style={{ marginBottom: 24 }}>
             <Notice tone="info" title="Notre engagement sur l'image">
               <p>Aucune photo identifiable d&apos;un mineur ou d&apos;un bénéficiaire n&apos;est publiée sans consentement approprié (et celui des parents ou tuteurs pour les mineurs). Lieux et dates ne sont indiqués que lorsqu&apos;ils sont connus.</p>
+              <p>Les images actuellement affichées sont des illustrations libres de droits (Unsplash) : elles ne montrent pas des actions de la fondation et seront remplacées par ses propres photos.</p>
             </Notice>
           </div>
           {items.length > 0 ? (

@@ -59,7 +59,7 @@ export default function AboutPage() {
           </div>
           <div className="center reveal">
             <Logo size="lg" />
-            <p className="small muted mt-2">{site.logo.src ? site.logo.alt : "Emplacement réservé au logo officiel de la fondation."}</p>
+            <p className="small muted mt-2">{site.logo.src ? "Le logo officiel de la fondation." : "Emplacement réservé au logo officiel de la fondation."}</p>
           </div>
         </div>
       </section>

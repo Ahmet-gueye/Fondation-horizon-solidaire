@@ -1,3 +1,5 @@
+import { stock, type StockImage } from "./images";
+
 /**
  * Programmes de la fondation.
  *
@@ -25,6 +27,8 @@ export type Programme = {
   budget: number | null; // en FCFA
   verifiedResults: string[];
   photos: { src: string; alt: string; caption?: string; consent: boolean }[];
+  /** Image d'illustration libre de droits (pas une photo de la fondation). */
+  cover: StockImage | null;
   confirmed: boolean;
 };
 
@@ -46,6 +50,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.livres,
     confirmed: true,
   },
   {
@@ -65,6 +70,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.stethoscope,
     confirmed: true,
   },
   {
@@ -84,6 +90,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.sacs,
     confirmed: true,
   },
   {
@@ -103,6 +110,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.groupe,
     confirmed: true,
   },
   {
@@ -122,6 +130,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.marche,
     confirmed: true,
   },
   {
@@ -141,6 +150,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: stock.village,
     confirmed: true,
   },
   {
@@ -160,6 +170,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
+    cover: null,
     // À passer à `true` uniquement si ce domaine fait partie des activités confirmées.
     confirmed: false,
   },

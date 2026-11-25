@@ -2,13 +2,13 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Politique de sécurité du contenu : aucune ressource tierce n'est chargée par le site.
+// Politique de sécurité du contenu : seules les images d'illustration Unsplash sont chargées depuis un tiers.
 // Si vous intégrez des vidéos (ex. YouTube sans cookies), ajoutez leur domaine à `frame-src`.
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://images.unsplash.com",
   "font-src 'self'",
   "connect-src 'self'",
   "frame-src 'self' https://www.youtube-nocookie.com",

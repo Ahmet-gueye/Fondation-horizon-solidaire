@@ -1,4 +1,5 @@
 import { site } from "@/config/site";
+import { stock } from "./images";
 
 /**
  * Fiches projets.
@@ -31,7 +32,7 @@ export type Project = {
   startDate: string | null;
   endDate: string | null;
   results: string[];
-  image: { src: string; alt: string; isIllustration: boolean } | null;
+  image: { src: string; alt: string; isIllustration: boolean; author?: string; page?: string } | null;
   acceptsDonations: boolean;
   featured: boolean;
   isExample: boolean;
@@ -67,7 +68,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: null,
+    image: { ...stock.regle, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,
@@ -94,7 +95,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: null,
+    image: { ...stock.consultation, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,
@@ -122,7 +123,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: null,
+    image: { ...stock.cultures, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,

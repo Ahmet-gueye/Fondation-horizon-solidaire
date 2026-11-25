@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { MediaSlot, ToComplete, ValueOr } from "@/components/Markers";
+import { Picture } from "@/components/Picture";
 import { PageHero, ProjectCard } from "@/components/ui";
 import { getProgramme, getPublicProgrammes } from "@/content/programmes";
 import { getProjects } from "@/content/projets";
@@ -69,6 +70,8 @@ export default async function ProgrammePage({ params }: { params: Promise<{ slug
                   {ph.caption ? <figcaption className="small muted">{ph.caption}</figcaption> : null}
                 </figure>
               ))
+            ) : p.cover ? (
+              <div className="rounded-media"><Picture image={{ ...p.cover, isIllustration: true }} ratio="4 / 3" /></div>
             ) : (
               <MediaSlot label="Photos du programme à fournir (avec consentement)" />
             )}

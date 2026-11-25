@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { ExampleBadge, MediaSlot, Notice } from "@/components/Markers";
 import { DonateBand, PageHero } from "@/components/ui";
+import { Picture } from "@/components/Picture";
 import { getArticle, getArticles } from "@/content/actualites";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
@@ -39,11 +40,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           ) : null}
           <div className="mt-3">
             {a.image ? (
-              <figure className="mt-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={a.image.src} alt={a.image.alt} style={{ borderRadius: 16 }} />
-                {a.image.isIllustration ? <figcaption className="small muted">Image d&apos;illustration</figcaption> : null}
-              </figure>
+              <div className="rounded-media"><Picture image={a.image} eager /></div>
             ) : (
               <MediaSlot label="Image de l'article à fournir" ratio="16 / 9" />
             )}

@@ -4,6 +4,7 @@ import { getDictionary } from "@/i18n";
 import { Icon } from "./Icon";
 import { Logo } from "./Logo";
 import { ToComplete } from "./Markers";
+import { EmailLinks } from "./Markers";
 
 const t = getDictionary();
 
@@ -54,7 +55,7 @@ export function Footer() {
             <ul>
               <li className="row-wrap">
                 <Icon name="mail" />
-                {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <ToComplete label="E-mail à compléter" />}
+                <EmailLinks emails={contact.emails} />
               </li>
               <li className="row-wrap">
                 <Icon name="phone" />

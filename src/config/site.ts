@@ -31,17 +31,18 @@ export const site = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   /**
-   * Logo officiel fourni par la fondation.
-   * 1. Déposez le fichier dans `public/images/` (ex. `public/images/logo.png`).
-   * 2. Renseignez `src`, puis la largeur et la hauteur RÉELLES du fichier
-   *    (en pixels) afin de préserver ses proportions.
-   * Tant que `src` vaut `null`, un emplacement « Logo à intégrer » est affiché.
+   * Logo officiel fourni par la fondation (fichiers dans `public/images/logo/`).
+   * - `emblem` : l'emblème (mains, soleil, personnes) recadré tel quel depuis le
+   *   visuel officiel, utilisé dans l'en-tête, le pied de page et l'icône du site ;
+   * - `full` : le visuel officiel complet, recadré sans les bandes noires.
+   * Indiquez toujours les dimensions RÉELLES des fichiers pour préserver les proportions.
    */
   logo: {
-    src: null as string | null, // ex. "/images/logo.png"
-    width: 0, // ex. 600
-    height: 0, // ex. 600
+    src: "/images/logo/logo-embleme.png" as string | null,
+    width: 294,
+    height: 294,
     alt: "Logo de la Fondation Horizon Solidaire",
+    full: { src: "/images/logo/logo-fondation-complet.jpg", width: 842, height: 841 },
   },
 
   /**
@@ -52,8 +53,9 @@ export const site = {
 
   /** Coordonnées officielles. `null` = non affiché, mention « À compléter ». */
   contact: {
-    email: null as string | null,
-    phone: null as string | null,
+    /** Adresses e-mail de contact (la première est l'adresse principale). */
+    emails: ["seydigaye9@gmail.com", "gayetapha1@gmail.com"] as string[],
+    phone: "+221 77 755 39 99" as string | null,
     whatsapp: null as string | null,
     address: null as string | null,
     openingHours: null as string | null,

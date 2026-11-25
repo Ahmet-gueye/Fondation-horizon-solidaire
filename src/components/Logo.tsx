@@ -7,7 +7,10 @@ import { site } from "@/config/site";
  * identifié s'affiche à la place (le logo n'est jamais redessiné).
  */
 export function Logo({ size = "md" }: { size?: "md" | "lg" }) {
-  const { src, width, height, alt } = site.logo;
+  const { src, width, height, alt, full } = site.logo;
+  if (size === "lg" && full?.src) {
+    return <Image src={full.src} alt={alt} width={full.width} height={full.height} className="logo-full" sizes="(max-width: 600px) 90vw, 380px" />;
+  }
   if (src && width > 0 && height > 0) {
     const h = size === "lg" ? 120 : 48;
     return (

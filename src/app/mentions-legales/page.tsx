@@ -1,4 +1,5 @@
 import { Notice, ValueOr } from "@/components/Markers";
+import { EmailLinks } from "@/components/Markers";
 import { PageHero } from "@/components/ui";
 import { site } from "@/config/site";
 import { pageMetadata } from "@/lib/seo";
@@ -20,7 +21,7 @@ export default function LegalPage() {
             <div><dt>N° d&apos;enregistrement</dt><dd><ValueOr value={legal.registrationNumber} /></dd></div>
             <div><dt>NINEA</dt><dd><ValueOr value={legal.ninea} /></dd></div>
             <div><dt>Siège</dt><dd><ValueOr value={legal.headquarters} /></dd></div>
-            <div><dt>Contact</dt><dd><ValueOr value={contact.email} /></dd></div>
+            <div><dt>Contact</dt><dd><EmailLinks emails={contact.emails} /></dd></div>
             <div><dt>Directeur de la publication</dt><dd><ValueOr value={legal.publicationDirector} /></dd></div>
           </dl>
           <h2>Hébergement</h2>

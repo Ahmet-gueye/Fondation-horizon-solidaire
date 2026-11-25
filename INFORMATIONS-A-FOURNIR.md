@@ -8,13 +8,14 @@ et le fichier où le renseigner.
 
 | Information | Où la renseigner |
 |---|---|
-| **Fichier du logo officiel** (PNG ou SVG, fond transparent si possible) + ses dimensions en pixels | `public/images/` puis `src/config/site.ts` → `logo` |
+| ✅ Logo officiel : intégré. Une version vectorielle (SVG) ou en haute définition améliorerait la netteté | `public/images/logo/` et `site.logo` |
 | Image de partage réseaux sociaux (1200 × 630 px), facultative | `public/images/` puis `site.shareImage` |
 | Validation des textes « mission », « vision », « valeurs » et « méthode » proposés | `src/app/qui-sommes-nous/page.tsx` |
 
 ## 2. Coordonnées officielles
 
-- Adresse e-mail officielle, téléphone, WhatsApp éventuel, adresse postale, horaires → `site.contact`
+- ✅ E-mails (seydigaye9@gmail.com, gayetapha1@gmail.com) et téléphone (+221 77 755 39 99) : intégrés
+- Restent à fournir : WhatsApp éventuel, adresse postale, horaires → `site.contact`
 - Comptes officiels de réseaux sociaux (URL exactes) → `site.socials`
 
 ## 3. Statut juridique (à partir des documents officiels uniquement)
@@ -48,6 +49,7 @@ et le fichier où le renseigner.
 ## 7. Contenus éditoriaux
 
 - Premières actualités réelles (titre, date, catégorie, texte, image libre de droits) → `src/content/actualites.ts`
+- Vos propres photos pour remplacer les images d'illustration Unsplash actuelles (`src/content/images.ts`)
 - Photos et vidéos avec droits d'usage et consentements (parents ou tuteurs pour les mineurs) → `src/content/galerie.ts`
 - Témoignages réels avec consentement écrit daté → `src/content/temoignages.ts`
 - Rapports annuels, bilans financiers, budgets, statuts et politiques (PDF) → `public/documents/` + `src/content/rapports.ts`

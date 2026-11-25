@@ -58,3 +58,13 @@ export function EmptyState({ icon = "doc", title, children }: { icon?: string; t
     </div>
   );
 }
+
+/** Liste d'adresses e-mail cliquables, ou mention « À compléter ». */
+export function EmailLinks({ emails, label = "E-mail à compléter" }: { emails: readonly string[]; label?: string }) {
+  if (emails.length === 0) return <ToComplete label={label} />;
+  return (
+    <span style={{ display: "inline-flex", flexDirection: "column", gap: 4 }}>
+      {emails.map((e) => <a key={e} href={`mailto:${e}`} style={{ overflowWrap: "anywhere" }}>{e}</a>)}
+    </span>
+  );
+}

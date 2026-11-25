@@ -143,6 +143,32 @@ Le module `src/lib/env.ts` est marqué `server-only` : le build échoue s'il est
   la création de paiement, la redirection et l'IPN signée ont été testées avec des clés fictives et des
   notifications simulées. Un essai en mode `test` avec les vraies clés est indispensable.
 
+## Logo et images
+
+- **Logo officiel** : fourni par la fondation, recadré (sans bandes noires, sans retouche ni déformation) dans
+  `public/images/logo/` : `logo-embleme.png` (en-tête, pied de page, icône du site) et `logo-fondation-complet.jpg`
+  (page « Qui sommes-nous ? », image de partage). L'icône d'onglet est `src/app/icon.png` / `apple-icon.png`.
+- **Images d'illustration** : photos libres de droits sous [licence Unsplash](https://unsplash.com/license)
+  (usage gratuit, sans autorisation préalable). Elles sont listées dans `src/content/images.ts`, affichées avec la
+  mention « Image d'illustration » et un crédit, et **ne représentent pas des actions de la fondation**. Elles sont
+  chargées depuis `images.unsplash.com` ; remplacez-les dès que possible par vos propres photos (avec consentement).
+
+| Usage | Photographe | Source |
+|---|---|---|
+| Programme Autonomisation | Wietse Jongsma | https://unsplash.com/photos/people-are-selling-goods-at-a-bustling-marketplace-DTUFoTIhzgU |
+| Programme Développement local | Wietse Jongsma | https://unsplash.com/photos/people-are-working-in-a-small-african-village-DJa0dqgMluM |
+| Programme Santé, galerie | Hush Naidoo Jade Photography | https://unsplash.com/photos/5HrQmJkIP_U |
+| Exemple projet santé, galerie | National Cancer Institute | https://unsplash.com/photos/a-woman-in-a-doctors-coat-talking-to-another-woman-4SiOVKH3DYA |
+| Programme Éducation, galerie | Fatima Yusuf | https://unsplash.com/photos/a-group-of-women-holding-books-0sljWIZH4IQ |
+| Exemple projet éducation, galerie | David Geneugelijk | https://unsplash.com/photos/a-student-carefully-draws-lines-with-a-ruler-zzcHmwBaG0w |
+| Programme Aide humanitaire, galerie | Karata My | https://unsplash.com/photos/people-loading-sacks-into-truck-heovropZuTA |
+| Programme Solidarité, galerie | Random Institute | https://unsplash.com/photos/a-diverse-group-of-people-sitting-together-fOeH7Nh2oy0 |
+| Exemple projet femmes | Annie Spratt | https://unsplash.com/photos/woman-planting-during-daytime-QYcSeY7vuZM |
+| Exemple d'article, galerie | Joel Muniz | https://unsplash.com/photos/volunteers-sorting-canned-food-donations-3k3l2brxmwQ |
+| Exemple d'article | Joe Ol | https://unsplash.com/photos/a-green-field-with-houses-in-the-distance-ZY0u6We7rDE |
+
+Les photos mettant des enfants au premier plan ont été volontairement écartées.
+
 ## Stockage des données et hébergement
 
 Les dons et messages sont enregistrés en JSON dans `DATA_DIR` (par défaut `./data`, fichiers en lecture

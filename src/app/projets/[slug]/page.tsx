@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { ExampleBadge, MediaSlot, Notice, ToComplete, ValueOr } from "@/components/Markers";
 import { PageHero, ProgressBlock } from "@/components/ui";
+import { Picture } from "@/components/Picture";
 import { getPublicProgrammes } from "@/content/programmes";
 import { getProject, getProjects, statusLabels } from "@/content/projets";
 import { formatDate } from "@/lib/format";
@@ -48,8 +49,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </Notice>
             ) : null}
             {p.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={p.image.src} alt={p.image.alt} style={{ borderRadius: 16, marginTop: 24 }} />
+              <div className="rounded-media mt-3"><Picture image={p.image} eager /></div>
             ) : (
               <div className="mt-3"><MediaSlot label="Photo du projet à fournir (avec consentement)" ratio="16 / 9" /></div>
             )}

@@ -7,6 +7,7 @@ import { formatDate, formatFCFA, formatNumber, percent } from "@/lib/format";
 import { getDictionary } from "@/i18n";
 import { Icon } from "./Icon";
 import { ExampleBadge, MediaSlot, ToComplete } from "./Markers";
+import { Picture } from "./Picture";
 
 const t = getDictionary();
 
@@ -115,6 +116,9 @@ export function ProgressBlock({ project }: { project: Project }) {
 export function ProgrammeCard({ programme }: { programme: Programme }) {
   return (
     <article className="card card-link reveal">
+      {programme.cover ? (
+        <div className="card-media"><Picture image={{ ...programme.cover, isIllustration: true }} caption={false} /></div>
+      ) : null}
       <div className={`icon-tile accent-${programme.accent}`}>
         <Icon name={programme.icon} />
       </div>
@@ -136,8 +140,7 @@ export function ProjectCard({ project }: { project: Project }) {
     <article className="card card-link reveal">
       <div className="card-media">
         {project.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={project.image.src} alt={project.image.alt} loading="lazy" />
+          <Picture image={project.image} caption={false} />
         ) : (
           <MediaSlot label="Photo du projet à fournir" ratio="16 / 9" />
         )}
@@ -165,8 +168,7 @@ export function NewsCard({ article }: { article: Article }) {
     <article className="card card-link reveal">
       <div className="card-media">
         {article.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={article.image.src} alt={article.image.alt} loading="lazy" />
+          <Picture image={article.image} caption={false} />
         ) : (
           <MediaSlot label="Image de l'article à fournir" ratio="16 / 9" />
         )}
