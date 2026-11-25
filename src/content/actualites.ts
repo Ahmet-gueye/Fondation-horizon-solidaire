@@ -17,7 +17,7 @@ export type Article = {
   date: string; // AAAA-MM-JJ
   summary: string;
   body: string[]; // paragraphes
-  image: { src: string; alt: string; isIllustration: boolean; author?: string; page?: string } | null;
+  image: { src: string; alt: string; isIllustration: boolean; author?: string; source?: string; page?: string } | null;
   isExample: boolean;
 };
 
@@ -33,7 +33,7 @@ const articles: Article[] = [
       "Ce texte est un exemple de démonstration. Il ne relate aucune action réelle de la Fondation Horizon Solidaire.",
       "Une actualité efficace répond à quelques questions simples : que s'est-il passé, où, quand, avec qui, et quel en est le résultat vérifiable ? Ajoutez si possible une photo dont vous avez le droit d'usage et le consentement des personnes reconnaissables.",
     ],
-    image: { ...stock.champ, isIllustration: true },
+    image: { ...stock.celebration, isIllustration: true },
     isExample: true,
   },
   {
@@ -47,7 +47,7 @@ const articles: Article[] = [
       "Ce texte est un exemple de démonstration et ne correspond à aucun appel réel.",
       "Précisez la mission, la durée, le lieu, les compétences recherchées et la manière de se porter volontaire.",
     ],
-    image: { ...stock.benevoles, isIllustration: true },
+    image: { ...stock.pecheurs, isIllustration: true },
     isExample: true,
   },
 ];

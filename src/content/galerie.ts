@@ -33,23 +33,26 @@ export type GalleryItem = {
   isExample: boolean;
   /** Crédit photo (images libres de droits). */
   author?: string;
+  source?: string;
   page?: string;
 };
 
 const ill = (id: string, img: (typeof stock)[keyof typeof stock], category: GalleryCategory): GalleryItem => ({
   id, type: "photo", src: img.src, alt: img.alt, caption: img.alt, category, place: null, date: null,
-  consent: false, isIllustration: true, isExample: true, author: img.author, page: img.page,
+  consent: false, isIllustration: true, isExample: true, author: img.author, source: img.source, page: img.page,
 });
 
 /** Les éléments `isExample` sont des images d'illustration (Unsplash) à remplacer par vos photos. */
 const items: GalleryItem[] = [
-  ill("ill-1", stock.regle, "Éducation"),
-  ill("ill-2", stock.consultation, "Santé"),
-  ill("ill-3", stock.sacs, "Solidarité"),
-  ill("ill-4", stock.groupe, "Événements"),
-  ill("ill-5", stock.livres, "Éducation"),
-  ill("ill-6", stock.benevoles, "Solidarité"),
-  ill("ill-7", stock.stethoscope, "Santé"),
+  ill("ill-1", stock.formation, "Éducation"),
+  ill("ill-2", stock.cahier, "Éducation"),
+  ill("ill-3", stock.soignant, "Santé"),
+  ill("ill-4", stock.reunion, "Solidarité"),
+  ill("ill-5", stock.village, "Solidarité"),
+  ill("ill-6", stock.marche, "Solidarité"),
+  ill("ill-7", stock.celebration, "Événements"),
+  ill("ill-8", stock.pecheurs, "Événements"),
+  ill("ill-9", stock.goree, "Événements"),
   { id: "ex-video", type: "video", src: null, alt: "Emplacement de vidéo à fournir", caption: "Emplacement : vidéo de présentation de la fondation", category: "Événements", place: null, date: null, consent: false, isIllustration: true, isExample: true },
 ];
 

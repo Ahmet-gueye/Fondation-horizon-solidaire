@@ -148,24 +148,27 @@ Le module `src/lib/env.ts` est marqué `server-only` : le build échoue s'il est
 - **Logo officiel** : fourni par la fondation, recadré (sans bandes noires, sans retouche ni déformation) dans
   `public/images/logo/` : `logo-embleme.png` (en-tête, pied de page, icône du site) et `logo-fondation-complet.jpg`
   (page « Qui sommes-nous ? », image de partage). L'icône d'onglet est `src/app/icon.png` / `apple-icon.png`.
-- **Images d'illustration** : photos libres de droits sous [licence Unsplash](https://unsplash.com/license)
-  (usage gratuit, sans autorisation préalable). Elles sont listées dans `src/content/images.ts`, affichées avec la
-  mention « Image d'illustration » et un crédit, et **ne représentent pas des actions de la fondation**. Elles sont
-  chargées depuis `images.unsplash.com` ; remplacez-les dès que possible par vos propres photos (avec consentement).
+- **Images d'illustration** : photos libres de droits sous [licence Unsplash](https://unsplash.com/license) ou
+  [licence Pexels](https://www.pexels.com/license/) (usage gratuit, sans autorisation préalable), **hébergées sur le
+  site** dans `public/images/illustrations/` (aucune requête vers un service tiers). Elles sont déclarées dans
+  `src/content/images.ts`, affichées avec la mention « Image d'illustration » et un crédit, et **ne représentent pas
+  des actions de la fondation**. Chaque photo a été regardée avant d'être retenue : contexte africain, sénégalais
+  dès que possible. Remplacez-les par vos propres photos (avec consentement) dès que possible.
 
-| Usage | Photographe | Source |
-|---|---|---|
-| Programme Autonomisation | Wietse Jongsma | https://unsplash.com/photos/people-are-selling-goods-at-a-bustling-marketplace-DTUFoTIhzgU |
-| Programme Développement local | Wietse Jongsma | https://unsplash.com/photos/people-are-working-in-a-small-african-village-DJa0dqgMluM |
-| Programme Santé, galerie | Hush Naidoo Jade Photography | https://unsplash.com/photos/5HrQmJkIP_U |
-| Exemple projet santé, galerie | National Cancer Institute | https://unsplash.com/photos/a-woman-in-a-doctors-coat-talking-to-another-woman-4SiOVKH3DYA |
-| Programme Éducation, galerie | Fatima Yusuf | https://unsplash.com/photos/a-group-of-women-holding-books-0sljWIZH4IQ |
-| Exemple projet éducation, galerie | David Geneugelijk | https://unsplash.com/photos/a-student-carefully-draws-lines-with-a-ruler-zzcHmwBaG0w |
-| Programme Aide humanitaire, galerie | Karata My | https://unsplash.com/photos/people-loading-sacks-into-truck-heovropZuTA |
-| Programme Solidarité, galerie | Random Institute | https://unsplash.com/photos/a-diverse-group-of-people-sitting-together-fOeH7Nh2oy0 |
-| Exemple projet femmes | Annie Spratt | https://unsplash.com/photos/woman-planting-during-daytime-QYcSeY7vuZM |
-| Exemple d'article, galerie | Joel Muniz | https://unsplash.com/photos/volunteers-sorting-canned-food-donations-3k3l2brxmwQ |
-| Exemple d'article | Joe Ol | https://unsplash.com/photos/a-green-field-with-houses-in-the-distance-ZY0u6We7rDE |
+| Fichier | Usage | Photographe | Lieu indiqué | Source |
+|---|---|---|---|---|
+| marche-senegal.jpg | Accueil, Autonomisation | Wietse Jongsma | Sénégal | https://unsplash.com/photos/people-are-selling-goods-at-a-bustling-marketplace-DTUFoTIhzgU |
+| village-senegal.jpg | Aide humanitaire | Wietse Jongsma | Sénégal | https://unsplash.com/photos/people-are-working-in-a-small-african-village-DJa0dqgMluM |
+| lac-rose-sel.jpg | Exemple projet femmes | Seyni Diouck | Lac Rose, Sénégal | https://unsplash.com/photos/2g8mNsYL5u8 |
+| celebration-senegal.jpg | Exemple d'article, galerie | Felipe Esono Nguema | Sénégal | https://www.pexels.com/photo/vibrant-celebration-with-senegal-flags-36598097/ |
+| pecheurs-dakar.jpg | Exemple d'article, galerie | Amaury Michaux | Dakar, Sénégal | https://www.pexels.com/photo/fishermen-with-fishing-boat-on-sea-shore-in-senegal-18189731/ |
+| plage-goree.jpg | Galerie | Amaury Michaux | Dakar, Sénégal | https://www.pexels.com/photo/sea-shore-in-town-in-senegal-18189694/ |
+| rue-rufisque.jpg | Réserve | Papa Birame Faye | Rufisque, Sénégal | https://www.pexels.com/photo/man-on-a-chaise-in-a-narrow-alley-14598168/ |
+| reunion-communautaire.jpg | Solidarité, galerie | Random Institute | non précisé | https://unsplash.com/photos/a-diverse-group-of-people-sitting-together-fOeH7Nh2oy0 |
+| formation-classe.jpg | Éducation, galerie | Aristide Ouedraogo | non précisé | https://www.pexels.com/photo/african-classroom-training-session-with-uniformed-students-31820972/ |
+| agricultrices.jpg | Développement local | Annie Spratt | Sierra Leone | https://unsplash.com/photos/woman-planting-during-daytime-QYcSeY7vuZM |
+| etude-cahier.jpg | Exemple projet éducation, galerie | David Geneugelijk | non précisé | https://unsplash.com/photos/a-student-carefully-draws-lines-with-a-ruler-zzcHmwBaG0w |
+| soignant-stethoscope.jpg | Santé, exemple projet santé | Hush Naidoo Jade Photography | Durban, Afrique du Sud | https://unsplash.com/photos/5HrQmJkIP_U |
 
 Les photos mettant des enfants au premier plan ont été volontairement écartées.
 

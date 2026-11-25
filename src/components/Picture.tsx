@@ -8,7 +8,7 @@ export function Picture({
   caption = true,
   eager = false,
 }: {
-  image: { src: string; alt: string; isIllustration?: boolean; author?: string; page?: string };
+  image: { src: string; alt: string; isIllustration?: boolean; author?: string; source?: string; page?: string };
   ratio?: string;
   caption?: boolean;
   eager?: boolean;
@@ -23,7 +23,7 @@ export function Picture({
       </div>
       {caption && ill && image.author ? (
         <figcaption className="picture-credit">
-          Photo : {image.page ? <a href={image.page} target="_blank" rel="noopener noreferrer">{image.author} / Unsplash<span className="visually-hidden"> (nouvel onglet)</span></a> : image.author}. Ne représente pas une action de la fondation.
+          Photo : {image.page ? <a href={image.page} target="_blank" rel="noopener noreferrer">{image.author}{image.source ? ` / ${image.source}` : ""}<span className="visually-hidden"> (nouvel onglet)</span></a> : image.author}. Ne représente pas une action de la fondation.
         </figcaption>
       ) : null}
     </figure>

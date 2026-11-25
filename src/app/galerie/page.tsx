@@ -30,7 +30,7 @@ function Item({ item }: { item: GalleryItem }) {
         </span>
         <span>{item.caption}</span>
         {item.author ? (
-          <span className="muted small">Photo : {item.page ? <a href={item.page} target="_blank" rel="noopener noreferrer">{item.author} / Unsplash</a> : item.author}. Ne représente pas une action de la fondation.</span>
+          <span className="muted small">Photo : {item.page ? <a href={item.page} target="_blank" rel="noopener noreferrer">{item.author} / {item.source}</a> : item.author}. Ne représente pas une action de la fondation.</span>
         ) : null}
         {item.place || item.date ? (
           <span className="muted small">{[item.place, item.date ? formatDate(item.date) : null].filter(Boolean).join(" · ")}</span>
@@ -50,7 +50,7 @@ export default function GalleryPage() {
           <div style={{ marginBottom: 24 }}>
             <Notice tone="info" title="Notre engagement sur l'image">
               <p>Aucune photo identifiable d&apos;un mineur ou d&apos;un bénéficiaire n&apos;est publiée sans consentement approprié (et celui des parents ou tuteurs pour les mineurs). Lieux et dates ne sont indiqués que lorsqu&apos;ils sont connus.</p>
-              <p>Les images actuellement affichées sont des illustrations libres de droits (Unsplash) : elles ne montrent pas des actions de la fondation et seront remplacées par ses propres photos.</p>
+              <p>Les images actuellement affichées sont des illustrations libres de droits (Unsplash, Pexels) : elles ne montrent pas des actions de la fondation et seront remplacées par ses propres photos.</p>
             </Notice>
           </div>
           {items.length > 0 ? (

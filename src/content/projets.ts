@@ -32,7 +32,7 @@ export type Project = {
   startDate: string | null;
   endDate: string | null;
   results: string[];
-  image: { src: string; alt: string; isIllustration: boolean; author?: string; page?: string } | null;
+  image: { src: string; alt: string; isIllustration: boolean; author?: string; source?: string; page?: string } | null;
   acceptsDonations: boolean;
   featured: boolean;
   isExample: boolean;
@@ -68,7 +68,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: { ...stock.regle, isIllustration: true },
+    image: { ...stock.cahier, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,
@@ -95,7 +95,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: { ...stock.consultation, isIllustration: true },
+    image: { ...stock.soignant, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,
@@ -123,7 +123,7 @@ const projects: Project[] = [
     startDate: null,
     endDate: null,
     results: [],
-    image: { ...stock.cultures, isIllustration: true },
+    image: { ...stock.lacRose, isIllustration: true },
     acceptsDonations: false,
     featured: false,
     isExample: true,

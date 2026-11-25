@@ -551,3 +551,17 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .rounded-media .picture-frame { border-radius: 16px; }
 .logo-full { border-radius: 22px; box-shadow: var(--shadow); max-width: 380px; width: 100%; margin-inline: auto; }
 .brand-logo img { border-radius: 10px; }
+.hero-photo { margin: 0; position: relative; }
+.hero-photo-frame {
+  position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-lg);
+  background: var(--green-100);
+}
+.hero-photo-frame::after {
+  content: ""; position: absolute; inset: auto -40px -40px auto; width: 140px; height: 140px; border-radius: 50%;
+  background: var(--sun-500); opacity: .9; z-index: -1;
+}
+.hero-photo::before {
+  content: ""; position: absolute; left: -14px; top: -14px; width: 90px; height: 90px; border-radius: 22px;
+  background: var(--sun-500); z-index: -1;
+}
+@media (min-width: 960px) { .hero-photo-frame { aspect-ratio: 5 / 4; } }

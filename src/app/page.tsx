@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { HeroArt } from "@/components/HeroArt";
+import Image from "next/image";
+import { heroImage } from "@/content/images";
 import { Icon } from "@/components/Icon";
 import { EmptyState } from "@/components/Markers";
 import { DonateBand, ImpactStats, NewsCard, ProgrammeCard, ProgressBlock, ProjectCard, SectionHead, showImpact } from "@/components/ui";
@@ -41,7 +42,16 @@ export default function HomePage() {
               <Link href="/projets" className="btn btn-outline">Découvrir nos projets</Link>
             </div>
           </div>
-          <HeroArt />
+          <figure className="hero-photo">
+            <div className="hero-photo-frame">
+              <Image src={heroImage.src} alt={heroImage.alt} fill priority sizes="(max-width: 960px) 100vw, 560px" style={{ objectFit: "cover" }} />
+              <span className="picture-tag">Image d&apos;illustration</span>
+            </div>
+            <figcaption className="picture-credit">
+              Photo : <a href={heroImage.page} target="_blank" rel="noopener noreferrer">{heroImage.author} / {heroImage.source}</a>
+              {heroImage.location ? ` (${heroImage.location})` : ""}. Ne représente pas une action de la fondation.
+            </figcaption>
+          </figure>
         </div>
       </section>
 

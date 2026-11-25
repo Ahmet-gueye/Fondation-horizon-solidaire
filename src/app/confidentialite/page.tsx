@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <h2>Durée de conservation</h2>
           <p><ValueOr value={null} label="Durées de conservation à définir par la fondation" /></p>
           <h2>Cookies et mesure d&apos;audience</h2>
-          <p>Ce site n&apos;utilise aucun cookie publicitaire, aucun traceur de réseau social et aucun outil de mesure d&apos;audience. Les polices de caractères sont hébergées sur le site lui-même. Certaines images d&apos;illustration sont chargées depuis le service Unsplash (images.unsplash.com) : comme pour toute image en ligne, votre navigateur lui transmet votre adresse IP, sans cookie. Aucun bandeau de consentement n&apos;est donc nécessaire. Si des outils de ce type étaient ajoutés, cette page serait mise à jour et votre consentement serait demandé au préalable.</p>
+          <p>Ce site n&apos;utilise aucun cookie publicitaire, aucun traceur de réseau social et aucun outil de mesure d&apos;audience. Les polices de caractères sont hébergées sur le site lui-même. Aucun bandeau de consentement n&apos;est donc nécessaire. Si des outils de ce type étaient ajoutés, cette page serait mise à jour et votre consentement serait demandé au préalable.</p>
           <h2>Vos droits</h2>
           <p>Vous pouvez demander l&apos;accès, la rectification ou la suppression de vos données, ou vous opposer à leur traitement, en écrivant à la fondation.</p>
         </div>

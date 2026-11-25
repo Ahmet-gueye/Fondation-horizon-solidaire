@@ -50,7 +50,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
-    cover: stock.livres,
+    cover: stock.formation,
     confirmed: true,
   },
   {
@@ -70,7 +70,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
-    cover: stock.stethoscope,
+    cover: stock.soignant,
     confirmed: true,
   },
   {
@@ -90,7 +90,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
-    cover: stock.sacs,
+    cover: stock.village,
     confirmed: true,
   },
   {
@@ -110,7 +110,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
-    cover: stock.groupe,
+    cover: stock.reunion,
     confirmed: true,
   },
   {
@@ -150,7 +150,7 @@ export const programmes: Programme[] = [
     budget: null,
     verifiedResults: [],
     photos: [],
-    cover: stock.village,
+    cover: stock.agricultrices,
     confirmed: true,
   },
   {
