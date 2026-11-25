@@ -565,3 +565,16 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   background: var(--sun-500); z-index: -1;
 }
 @media (min-width: 960px) { .hero-photo-frame { aspect-ratio: 5 / 4; } }
+
+/* Visuel officiel en bannière d'accueil (affiché tel quel, sans recadrage ni déformation) */
+.hero-visual { margin: 0 auto; position: relative; width: 100%; max-width: 520px; }
+.hero-visual img { display: block; width: 100%; height: auto; border-radius: 30px; box-shadow: var(--shadow-lg); }
+.hero-visual::before {
+  content: ""; position: absolute; left: -14px; top: -14px; width: 90px; height: 90px; border-radius: 22px;
+  background: var(--sun-500); z-index: -1;
+}
+.hero-visual::after {
+  content: ""; position: absolute; right: -18px; bottom: -18px; width: 120px; height: 120px; border-radius: 50%;
+  background: var(--green-100); z-index: -1;
+}
+@media (max-width: 600px) { .hero-visual::before, .hero-visual::after { display: none; } }

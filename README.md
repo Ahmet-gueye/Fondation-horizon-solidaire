@@ -146,7 +146,7 @@ Le module `src/lib/env.ts` est marqué `server-only` : le build échoue s'il est
 ## Logo et images
 
 - **Logo officiel** : fourni par la fondation, recadré (sans bandes noires, sans retouche ni déformation) dans
-  `public/images/logo/` : `logo-embleme.png` (en-tête, pied de page, icône du site) et `logo-fondation-complet.jpg`
+  `public/images/logo/` : `logo-embleme.png` (en-tête, pied de page, icône du site) et `logo-fondation-complet.png` (visuel officiel, aussi utilisé en bannière d'accueil)
   (page « Qui sommes-nous ? », image de partage). L'icône d'onglet est `src/app/icon.png` / `apple-icon.png`.
 - **Images d'illustration** : photos libres de droits sous [licence Unsplash](https://unsplash.com/license) ou
   [licence Pexels](https://www.pexels.com/license/) (usage gratuit, sans autorisation préalable), **hébergées sur le

@@ -42,7 +42,7 @@ export const site = {
     width: 294,
     height: 294,
     alt: "Logo de la Fondation Horizon Solidaire",
-    full: { src: "/images/logo/logo-fondation-complet.jpg", width: 842, height: 841 },
+    full: { src: "/images/logo/logo-fondation-complet.png", width: 695, height: 703 },
   },
 
   /**

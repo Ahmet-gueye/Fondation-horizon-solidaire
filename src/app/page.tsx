@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { heroImage } from "@/content/images";
 import { Icon } from "@/components/Icon";
 import { EmptyState } from "@/components/Markers";
 import { DonateBand, ImpactStats, NewsCard, ProgrammeCard, ProgressBlock, ProjectCard, SectionHead, showImpact } from "@/components/ui";
@@ -42,15 +41,15 @@ export default function HomePage() {
               <Link href="/projets" className="btn btn-outline">Découvrir nos projets</Link>
             </div>
           </div>
-          <figure className="hero-photo">
-            <div className="hero-photo-frame">
-              <Image src={heroImage.src} alt={heroImage.alt} fill priority sizes="(max-width: 960px) 100vw, 560px" style={{ objectFit: "cover" }} />
-              <span className="picture-tag">Image d&apos;illustration</span>
-            </div>
-            <figcaption className="picture-credit">
-              Photo : <a href={heroImage.page} target="_blank" rel="noopener noreferrer">{heroImage.author} / {heroImage.source}</a>
-              {heroImage.location ? ` (${heroImage.location})` : ""}. Ne représente pas une action de la fondation.
-            </figcaption>
+          <figure className="hero-visual">
+            <Image
+              src={site.logo.full.src}
+              alt="Visuel officiel de la Fondation Horizon Solidaire : logo (mains entourant une poignée de main sous un soleil), devise « Ensemble, construisons un avenir durable » et six domaines d'action : éducation pour tous, santé pour tous, aide humanitaire, solidarité communautaire, développement durable, entraide et partage."
+              width={site.logo.full.width}
+              height={site.logo.full.height}
+              priority
+              sizes="(max-width: 960px) min(92vw, 520px), 520px"
+            />
           </figure>
         </div>
       </section>
