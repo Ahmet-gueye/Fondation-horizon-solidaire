@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { site, type ImpactIndicator } from "@/config/site";
 import { getPublicProgrammes, type Programme } from "@/content/programmes";
-import { hasVerifiedFinancials, statusLabels, type Project } from "@/content/projets";
 import type { Article } from "@/content/actualites";
 import { formatDate, formatFCFA, formatNumber, percent } from "@/lib/format";
 import { getDictionary } from "@/i18n";
@@ -83,36 +82,6 @@ export function ImpactStats({ items }: { items: ImpactIndicator[] }) {
   );
 }
 
-export function ProgressBlock({ project }: { project: Project }) {
-  if (!hasVerifiedFinancials(project)) {
-    return <ToComplete label="Données financières à renseigner" />;
-  }
-  const budget = project.budget as number;
-  const collected = project.collected as number;
-  const remaining = Math.max(0, budget - collected);
-  const pct = percent(collected, budget);
-  return (
-    <div className="progress">
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={pct}
-        aria-label={`Financement : ${pct} % de l'objectif`}
-      >
-        <div className="progress-bar" style={{ "--value": `${pct}%` } as React.CSSProperties} />
-      </div>
-      <div className="progress-figures">
-        <span><strong>{formatFCFA(collected)}</strong> reçus</span>
-        <span>Objectif : {formatFCFA(budget)}</span>
-        <span>Reste : {formatFCFA(remaining)}</span>
-      </div>
-      <p className="small muted mb-0">Montants mis à jour le {formatDate(project.financialsUpdatedAt as string)}.</p>
-    </div>
-  );
-}
-
 export function ProgrammeCard({ programme }: { programme: Programme }) {
   return (
     <article className="card card-link reveal">
@@ -126,38 +95,6 @@ export function ProgrammeCard({ programme }: { programme: Programme }) {
       <p>{programme.summary}</p>
       <div className="card-foot">
         <span className="link-arrow" aria-hidden="true">Découvrir</span>
-      </div>
-    </article>
-  );
-}
-
-const statusTone: Record<Project["status"], string> = { "en-preparation": "badge-blue", "en-cours": "badge-sun", termine: "" };
-
-export function ProjectCard({ project }: { project: Project }) {
-  const programme = getPublicProgrammes().find((p) => p.slug === project.programme);
-  const place = [project.commune, project.region].filter(Boolean).join(", ");
-  return (
-    <article className="card card-link reveal">
-      <div className="card-media">
-        {project.image ? (
-          <Picture image={project.image} caption={false} />
-        ) : (
-          <MediaSlot label="Photo du projet à fournir" ratio="16 / 9" />
-        )}
-      </div>
-      <div className="row-wrap">
-        {project.isExample ? <ExampleBadge /> : null}
-        <span className={`badge ${statusTone[project.status]}`}>{statusLabels[project.status]}</span>
-        {programme ? <span className="badge badge-teal">{programme.shortTitle}</span> : null}
-      </div>
-      <h3><Link href={`/projets/${project.slug}`}>{project.title}</Link></h3>
-      <p className="meta">
-        <Icon name="pin" />
-        {place ? `${place}${project.isExample ? " (lieu d'exemple)" : ""}` : "Zone à préciser"}
-      </p>
-      <p>{project.summary}</p>
-      <div className="card-foot">
-        <ProgressBlock project={project} />
       </div>
     </article>
   );
@@ -189,10 +126,10 @@ export function DonateBand({ title, text }: { title?: string; text?: string }) {
     <div className="cta-band reveal">
       <div>
         <h2>{title ?? "Votre soutien change des trajectoires"}</h2>
-        <p>{text ?? "Un don, quel que soit son montant, permet à la fondation d'agir concrètement aux côtés des communautés du Sénégal. Le paiement se fait en quelques instants, y compris depuis un téléphone."}</p>
+        <p>{text ?? "Le don en ligne ouvrira bientôt. En attendant, contactez la fondation pour savoir comment soutenir ses actions aux côtés des communautés du Sénégal."}</p>
       </div>
       <div className="cta-actions">
-        <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />Faire un don</Link>
+        <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />Nous soutenir</Link>
         <Link href="/transparence" className="btn btn-light">Comment les dons sont utilisés</Link>
       </div>
     </div>

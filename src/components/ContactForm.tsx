@@ -8,15 +8,15 @@ const TYPES = {
   general: "Demande générale",
   benevolat: "Bénévolat",
   partenariat: "Partenariat",
-  projet: "Soutien à un projet",
+  projet: "Soutenir la fondation ou un projet",
 } as const;
 type ContactType = keyof typeof TYPES;
 type Errors = Record<string, string>;
 
-export function ContactForm({ initialType = "general", lockType = false, title }: { initialType?: ContactType; lockType?: boolean; title?: string }) {
+export function ContactForm({ initialType = "general", lockType = false, title, initialMessage = "" }: { initialType?: ContactType; lockType?: boolean; title?: string; initialMessage?: string }) {
   const uid = useId();
   const [type, setType] = useState<ContactType>(initialType);
-  const [values, setValues] = useState({ name: "", email: "", phone: "", organisation: "", availability: "", message: "" });
+  const [values, setValues] = useState({ name: "", email: "", phone: "", organisation: "", availability: "", message: initialMessage });
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
   const [errors, setErrors] = useState<Errors>({});

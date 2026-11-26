@@ -23,73 +23,11 @@ export function isPhone(value: string) {
   return PHONE_RE.test(value);
 }
 
-export type DonationInput = {
-  amount: number;
-  /** Affectation : null (don général), « programme:<slug> » ou « projet:<slug> ». */
-  allocation: string | null;
-  frequency: "ponctuel" | "mensuel";
-  name: string;
-  email: string;
-  phone: string;
-  anonymous: boolean;
-  consent: boolean;
-  idempotencyKey: string;
-};
-
-export function validateDonation(
-  body: Record<string, unknown>,
-  rules: {
-    minAmount: number;
-    maxAmount: number;
-    allowedAllocations: string[];
-    recurringEnabled: boolean;
-    allowAnonymous: boolean;
-    askPhone: boolean;
-  },
-): { ok: true; data: DonationInput } | { ok: false; errors: FieldErrors } {
-  const errors: FieldErrors = {};
-
-  const rawAmount = typeof body.amount === "number" ? body.amount : Number(String(body.amount ?? "").replace(/\s/g, ""));
-  const amount = Number.isFinite(rawAmount) ? rawAmount : NaN;
-  if (!Number.isInteger(amount)) errors.amount = "Indiquez un montant entier en FCFA.";
-  else if (amount < rules.minAmount) errors.amount = `Le montant minimum est de ${rules.minAmount} FCFA.`;
-  else if (amount > rules.maxAmount) errors.amount = `Le montant maximum en ligne est de ${rules.maxAmount} FCFA.`;
-
-  const allocationRaw = cleanText(body.allocation, 140);
-  const allocation = allocationRaw && allocationRaw !== "general" ? allocationRaw : null;
-  if (allocation && !rules.allowedAllocations.includes(allocation)) errors.allocation = "Cette affectation n'est pas disponible pour un don en ligne.";
-
-  const frequency = body.frequency === "mensuel" ? "mensuel" : "ponctuel";
-  if (frequency === "mensuel" && !rules.recurringEnabled) errors.frequency = "Le don périodique n'est pas disponible pour le moment.";
-
-  const anonymous = rules.allowAnonymous && body.anonymous === true;
-  const name = cleanText(body.name, 120);
-  const email = cleanText(body.email, 254).toLowerCase();
-  const phone = cleanText(body.phone, 20);
-
-  if (!anonymous) {
-    if (name.length < 2) errors.name = "Indiquez votre nom.";
-    if (!isEmail(email)) errors.email = "Indiquez une adresse e-mail valide.";
-  } else if (email && !isEmail(email)) {
-    errors.email = "L'adresse e-mail n'est pas valide.";
-  }
-  if (rules.askPhone && !isPhone(phone)) errors.phone = "Indiquez un numéro de téléphone valide.";
-  else if (phone && !isPhone(phone)) errors.phone = "Le numéro de téléphone n'est pas valide.";
-
-  if (body.consent !== true) errors.consent = "Vous devez accepter les conditions de don et la politique de confidentialité.";
-
-  const idempotencyKey = cleanText(body.idempotencyKey, 64);
-  if (!/^[A-Za-z0-9-]{16,64}$/.test(idempotencyKey)) errors.form = "Session de formulaire invalide. Rechargez la page.";
-
-  if (Object.keys(errors).length > 0) return { ok: false, errors };
-  return { ok: true, data: { amount, allocation, frequency, name, email, phone, anonymous, consent: true, idempotencyKey } };
-}
-
 export const contactTypes = {
   general: "Demande générale",
   benevolat: "Bénévolat",
   partenariat: "Partenariat",
-  projet: "Soutien à un projet",
+  projet: "Soutenir la fondation ou un projet",
 } as const;
 
 export type ContactType = keyof typeof contactTypes;

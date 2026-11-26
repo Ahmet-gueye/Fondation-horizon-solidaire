@@ -3,7 +3,7 @@ export const fr = {
   skipToContent: "Aller au contenu principal",
   menu: "Menu",
   closeMenu: "Fermer le menu",
-  donate: "Faire un don",
+  donate: "Nous soutenir",
   language: "Langue",
   languageSoon: "en préparation",
   toComplete: "À compléter par la fondation",

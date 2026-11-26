@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeIpnHmac, sha256Hex, verifyIpn } from "../src/lib/paytech-signature.ts";
+import { computeIpnHmac, sha256Hex, verifyIpn } from "../src/lib/payments/paytech-signature.ts";
 
 const KEY = "cle-api-de-test";
 const SECRET = "secret-api-de-test";

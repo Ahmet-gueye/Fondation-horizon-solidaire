@@ -22,6 +22,16 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: { formats: ["image/avif", "image/webp"] },
+  // sharp (optimisation des images importées) reste un module natif côté serveur.
+  serverExternalPackages: ["sharp"],
+  async redirects() {
+    return [
+      // Anciennes adresses des projets : les projets sont désormais des fiches gérées dans l'administration.
+      { source: "/projets", destination: "/activites?type=projet", permanent: true },
+      { source: "/projets/:slug", destination: "/activites/:slug", permanent: true },
+      { source: "/faire-un-don/:etape(merci|annule|simulation)", destination: "/faire-un-don", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
@@ -36,6 +46,8 @@ const nextConfig: NextConfig = {
         ],
       },
       { source: "/api/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
+      { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }, { key: "Cache-Control", value: "no-store" }] },
+      { source: "/admin", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }, { key: "Cache-Control", value: "no-store" }] },
     ];
   },
 };

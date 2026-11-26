@@ -1,7 +1,12 @@
 # Site web de la Fondation Horizon Solidaire
 
 Site francophone de la Fondation Horizon Solidaire (Sénégal) : présentation de la fondation, programmes,
-projets, transparence, actualités, galerie, bénévolat, partenariats et **dons en ligne via PayTech**.
+activités et campagnes, transparence, actualités, galerie, bénévolat, partenariats, et un **espace
+d'administration** pour publier les activités, événements, projets et campagnes sans toucher au code.
+
+> **Dons en ligne : pas encore ouverts.** Le compte PayTech de la fondation n'est pas activé. Le site n'affiche
+> aucun formulaire de paiement, aucun bouton « Payer » et n'encaisse rien. La page « Nous soutenir » invite à
+> contacter la fondation. L'activation future est décrite plus bas (« Activer PayTech plus tard »).
 
 > **Important.** Le site n'invente aucune donnée réelle. Tout ce qui manque s'affiche « À compléter par
 > la fondation » ou reste masqué. La liste complète des informations à fournir se trouve dans
@@ -10,9 +15,12 @@ projets, transparence, actualités, galerie, bénévolat, partenariats et **dons
 ## Stack technique
 
 - **Next.js 16** (App Router, React 19, TypeScript) : pages rapides et bien référencées, et partie serveur
-  intégrée pour PayTech (clés secrètes, création des paiements, notifications).
+  intégrée (administration, formulaires, et plus tard PayTech).
 - **CSS simple** avec variables de thème (`src/app/globals.css`), sans framework lourd.
-- **Aucune dépendance superflue** : `next`, `react`, `react-dom`, `server-only`.
+- **Dépendances limitées** : `next`, `react`, `react-dom`, `server-only`, plus `postgres` (base de données),
+  `@vercel/blob` (stockage des images) et `sharp` (optimisation des images).
+- **Hébergement visé : Vercel**, avec deux services gratuits à ajouter depuis l'onglet *Storage* de Vercel :
+  une base **PostgreSQL (Neon)** et un magasin **Vercel Blob**. Voir « Espace d'administration ».
 - Polices auto-hébergées au build (aucune requête vers Google côté visiteur), aucun traceur, aucun cookie
   non essentiel : pas de bandeau de consentement nécessaire.
 
@@ -33,27 +41,34 @@ npm run build
 npm start                       # port 3000 par défaut (PORT=8080 npm start pour changer)
 ```
 
-Autres commandes : `npm run typecheck` (TypeScript) et `npm test` (tests de la signature PayTech et des validations).
+Autres commandes : `npm run typecheck` (TypeScript) et `npm test` (validation des fiches, mots de passe, sessions,
+droits des rôles, formulaires et signature PayTech).
+
+En local, sans aucune variable, le site fonctionne et l'administration enregistre ses données dans `data/`
+(voir « Ce qui fonctionne en local »).
 
 ## Structure
 
 ```
 src/
-  app/                    Pages (une par dossier) et routes API
-    api/dons/             Création d'un don + statut + simulation
-    api/paytech/ipn/      Réception des notifications PayTech (IPN)
+  app/
+    (site)/               Pages publiques (accueil, programmes, activites, actualites, faire-un-don…)
+    admin/                Espace d'administration (connexion, fiches, comptes, historique, messages)
+    api/admin/            Routes protégées : session, installation, fiches, médias, comptes
     api/contact/          Formulaires contact / bénévolat / partenariat
-  components/             Composants partagés (en-tête, pied de page, cartes, formulaires…)
+    media/[id]/[variante] Diffusion contrôlée des images et PDF importés
+  components/             Composants partagés ; admin/ pour l'administration
   config/
     site.ts               Identité, logo, coordonnées, statut juridique, chiffres d'impact
-    donations.ts          Montants, bornes, frais, moyens de paiement confirmés
-  content/                Contenus éditables : programmes, projets, actualités, galerie,
-                          rapports, équipe, témoignages, partenaires, FAQ
-  i18n/                   Textes d'interface et préparation wolof / anglais
-  lib/                    PayTech, validation, sécurité, stockage, formatage
-public/images/            Logo et images
-public/documents/         Rapports PDF (à créer)
-data/                     Dons et messages enregistrés (non versionné)
+    donations.ts          Dons en ligne (désactivés), devises prévues
+  content/                Contenus fixes : programmes, actualités, galerie, rapports, équipe, FAQ
+  lib/
+    auth/                 Mots de passe, sessions, rôles, comptes
+    db/                   Base de données (PostgreSQL ou fichiers locaux) et stockage des fichiers
+    fiches/               Modèle, validation, enregistrement et images des fiches
+    payments/             PayTech, préparé mais NON branché
+public/images/            Logo et images d'illustration
+data/                     Données locales de développement (non versionné)
 tests/                    Tests automatisés
 ```
 
@@ -65,11 +80,10 @@ Après modification : `npm run build` puis redémarrage (ou redéploiement).
 - **Logo** : déposez le fichier dans `public/images/`, puis renseignez `logo.src`, `logo.width` et `logo.height`
   (dimensions réelles du fichier) dans `src/config/site.ts`. Les proportions sont préservées automatiquement.
 - **Chiffres d'impact** : `site.impact`. Une valeur `null` affiche « Données à renseigner ».
-- **Projets** : `src/content/projets.ts`. La barre de progression n'apparaît que si `budget`, `collected`
-  **et** `financialsUpdatedAt` sont renseignés. `acceptsDonations: true` rend le projet sélectionnable dans le
-  formulaire de don. `featured: true` le met en avant sur l'accueil.
-- **Exemples de démonstration** : marqués « Exemple à remplacer » ou « Exemple fictif ». Ils n'acceptent jamais
-  de don, ne sont pas indexés et sont retirés en passant `site.showExamples` à `false`.
+- **Activités, événements, projets et campagnes** : ils ne sont plus dans le code. Ils se gèrent dans l'espace
+  d'administration (`/admin`), voir plus bas.
+- **Exemples de démonstration** (actualités) : marqués « Exemple fictif ». Ils ne sont pas indexés et sont
+  retirés en passant `site.showExamples` à `false`.
 - **Documents de transparence** : PDF dans `public/documents/` + entrée dans `src/content/rapports.ts`
   (avec date de publication et de mise à jour).
 - **Vidéos** : utilisez une URL d'intégration `https://www.youtube-nocookie.com/embed/...` (déjà autorisée
@@ -83,65 +97,177 @@ par une personne compétente (pas de traduction automatique non relue), créer `
 dans `src/i18n/index.ts`, puis ajouter un segment `[lang]` au routage (voir la documentation Next.js
 « Internationalization »).
 
-## Dons et PayTech : configuration sécurisée
+## Espace d'administration
 
-Documentation de référence consultée : <https://docs.intech.sn/doc_paytech.php> (novembre 2026).
+Adresse : **`https://votre-site/admin`** (en local : `http://localhost:3000/admin`). Il n'y a aucun lien vers cet
+espace dans le site public ; il n'est pas indexé par les moteurs de recherche.
 
-### Fonctionnement
+### Ce qu'il faut configurer chez l'hébergeur (une seule fois)
 
-1. Le donateur choisit montant et affectation. Le navigateur envoie la demande à **notre serveur** (`/api/dons`).
-2. Le serveur valide tout (montant entier en XOF entre les bornes, affectation autorisée, consentement), vérifie
-   l'origine de la requête, applique une limite de débit et une clé d'idempotence (pas de doublon en cas de
-   double clic), enregistre le don « en attente » avec une référence unique `FHS-AAAAMMJJ-XXXXXXXXXX`.
-3. Le serveur appelle `POST https://paytech.sn/api/payment/request-payment` avec les en-têtes `API_KEY` /
-   `API_SECRET`, puis redirige le donateur vers la page sécurisée PayTech (`redirect_url`). Le site ne voit
-   jamais les données de carte ou de paiement mobile.
-4. PayTech notifie le serveur sur `/api/paytech/ipn`. Le serveur vérifie la signature **HMAC-SHA256**
-   (`hmac_compute` = HMAC(secret, `montant|ref_command|clé`)), ou à défaut les empreintes SHA-256 des clés,
-   puis contrôle la référence, le montant, la devise et l'environnement. **C'est la seule façon de passer
-   un don à « payé ».** Une notification rejouée est sans effet et un don payé ne peut plus être annulé.
-5. La page de retour (`/faire-un-don/merci`) interroge le serveur et affiche l'état réel : confirmé,
-   en attente de confirmation, annulé, échoué ou introuvable.
+L'administration a besoin de trois choses. Tant qu'elles manquent, `/admin` affiche une page « Configuration »
+qui indique ce qui manque (sans jamais afficher de valeur secrète), et le site public reste consultable.
 
-Les journaux (sortie standard) ne contiennent ni nom, ni e-mail, ni téléphone : seulement la référence,
-le montant et l'événement.
-
-### Les trois modes (`PAYTECH_MODE`)
-
-| Mode | Usage | Effet |
+| Variable | Rôle | Comment l'obtenir |
 |---|---|---|
-| `simulation` (défaut) | Démonstration, développement | Aucun appel à PayTech. Une page « Paiement simulé » permet de tester succès, annulation et échec. Bandeau visible sur la page de don. |
-| `test` | Essais internes avec PayTech | Vraie page PayTech, mais PayTech débite un petit montant de test (100 à 150 FCFA d'après la doc) quel que soit le montant. Ne pas ouvrir au public. |
-| `prod` | Site en ligne | Paiements réels. Le compte PayTech doit être activé par PayTech. |
+| `DATABASE_URL` | Base de données (fiches, comptes, historique, messages) | Vercel > projet > **Storage** > *Create Database* > **Neon (PostgreSQL)**, puis *Connect Project* : la variable est ajoutée automatiquement (elle peut s'appeler `POSTGRES_URL`, le site accepte les deux). Tout autre PostgreSQL hébergé convient (Supabase…). |
+| `BLOB_READ_WRITE_TOKEN` | Stockage des images et PDF importés | Vercel > **Storage** > *Create* > **Blob**, accès **Private**, puis *Connect Project* : la variable est ajoutée automatiquement. |
+| `AUTH_SECRET` | Signature des sessions de connexion | Une longue chaîne aléatoire (32 caractères minimum). Sur un ordinateur : `openssl rand -base64 48`. |
+| `ADMIN_SETUP_TOKEN` | Code à usage unique pour créer le premier administrateur | Une chaîne aléatoire d'au moins 16 caractères que vous choisissez. Peut être supprimée une fois le premier compte créé. |
 
-Sans `PAYTECH_API_KEY` **et** `PAYTECH_API_SECRET`, le site reste en simulation quel que soit le mode demandé.
+Ajoutez `AUTH_SECRET` et `ADMIN_SETUP_TOKEN` dans Vercel > projet > **Settings > Environment Variables**, puis
+**redéployez** (onglet *Deployments* > *Redeploy*). Aucun mot de passe par défaut n'existe dans le code.
 
-### Mise en service pas à pas
+Le magasin Blob doit être créé en accès **Private** : les fichiers ne sont alors lisibles qu'à travers le site,
+qui vérifie que la fiche est publiée. (`BLOB_ACCESS=public` n'est à utiliser que si votre magasin est public.)
 
-1. Créer le compte sur paytech.sn et demander l'activation (contact@paytech.sn, objet « Activation Compte
-   PayTech », pièces demandées par PayTech).
-2. Récupérer la clé API et la clé secrète dans le tableau de bord PayTech.
-3. Chez l'hébergeur, définir `NEXT_PUBLIC_SITE_URL` (en **https**), `PAYTECH_MODE=test`, `PAYTECH_API_KEY`,
-   `PAYTECH_API_SECRET`. L'URL de notification `https://votre-domaine/api/paytech/ipn` est transmise
-   automatiquement à chaque paiement (PayTech exige le HTTPS pour l'IPN).
-4. Faire un don de test, vérifier qu'il passe à « payé » dans `data/donations.json` et sur la page de remerciement.
-5. Renseigner les moyens de paiement **confirmés** (`PAYTECH_TARGET_PAYMENT`, `donationConfig.confirmedPaymentMethods`)
-   et le texte sur les frais (`donationConfig.feesNotice`).
-6. Passer `PAYTECH_MODE=prod`, rebuild, et faire un vrai don de faible montant pour valider.
+### Créer le premier compte administrateur
 
-**Ne mettez jamais les clés dans le code, dans un fichier versionné ou dans une variable `NEXT_PUBLIC_*`.**
-Le module `src/lib/env.ts` est marqué `server-only` : le build échoue s'il est importé côté navigateur.
+1. Ouvrez `https://votre-site/admin` : vous arrivez sur « Créer le premier administrateur ».
+2. Saisissez le code `ADMIN_SETUP_TOKEN`, votre nom, votre e-mail et un mot de passe de 12 caractères minimum
+   (une phrase de plusieurs mots est idéale).
+3. Le compte est créé et vous êtes connecté. **La page d'installation se ferme définitivement** dès qu'un compte
+   existe. Vous pouvez ensuite retirer `ADMIN_SETUP_TOKEN` des variables Vercel.
+
+Les autres comptes se créent dans **Comptes** : l'administrateur choisit un mot de passe provisoire, le transmet
+par un moyen sûr, et la personne le change dans **Mon compte**. Mot de passe oublié : un administrateur en
+définit un nouveau (bouton « Nouveau mot de passe »).
+
+### Rôles
+
+| Action | Éditeur | Administrateur |
+|---|---|---|
+| Créer une fiche, modifier une fiche non publiée, importer images et PDF | oui | oui |
+| Modifier une fiche déjà publiée | non | oui |
+| Publier, retirer du site, archiver, sortir des archives | non | oui |
+| Supprimer définitivement (seulement une fiche jamais publiée) | non | oui |
+| Valider les montants (budget, collecté, dépensé) pour les afficher | non | oui |
+| Gérer les comptes, consulter l'historique et les messages reçus | non | oui |
+
+Il reste toujours au moins un administrateur actif (le site refuse de désactiver ou rétrograder le dernier).
+Désactiver un compte, changer son rôle ou son mot de passe le déconnecte immédiatement de tous ses appareils.
+
+### Créer, modifier, publier et archiver une fiche
+
+1. **Fiches > Nouvelle fiche.** Remplissez : type (activité, événement, projet, campagne), domaine d'action
+   (les programmes du site), titre, résumé, description, zone (région, département, commune, localité), dates
+   (une date avec heure et durée, ou une période), calendrier détaillé (étapes), budget, images, documents PDF,
+   bouton d'appel à l'action (participer, devenir bénévole, en savoir plus, soutenir la campagne) et statut
+   (brouillon, planifié, en cours, terminé).
+2. **Enregistrer** ne publie jamais. La fiche reste invisible du public, ses images aussi. Le bouton **Aperçu**
+   montre la page telle qu'elle apparaîtra.
+3. **Publier** (administrateur) : possible si le statut n'est pas « brouillon » et si la description, la zone
+   et la date sont renseignées. La fiche apparaît alors dans « Activités », sur l'accueil, dans la page du
+   programme et dans le sitemap.
+4. **Modifier** une fiche publiée (administrateur) : les changements sont en ligne dès l'enregistrement.
+   L'adresse de la page ne change plus après la première publication.
+5. **Retirer du site** : la fiche redevient invisible, sans être archivée.
+6. **Archiver** : la fiche disparaît du site, des filtres, des compteurs et du sitemap, et n'est plus
+   modifiable ; ses images ne sont plus servies. **Sortir des archives** la remet en brouillon non publié.
+7. **Supprimer** n'est possible que pour une fiche jamais publiée, après avoir tapé SUPPRIMER. Une fiche déjà
+   publiée s'archive.
+
+Ce que voit le public : uniquement les fiches publiées et non archivées. Un événement dont la date est passée
+est affiché « Date passée » ou « Terminé », jamais « À venir ». Les montants n'apparaissent que s'ils ont été
+cochés « validés » par un administrateur ; si un éditeur les modifie ensuite, la validation est annulée.
+
+### Images et documents
+
+- **Import** depuis un ordinateur ou un téléphone (appareil photo ou galerie), avec aperçu immédiat, et boutons
+  « Remplacer » et « Retirer ».
+- **Formats acceptés** : JPEG, PNG, WebP (20 Mo maximum avant traitement, 400 px de large minimum). Les photos
+  d'iPhone (HEIC) sont converties en JPEG par le téléphone lors de l'envoi.
+- **Dans le navigateur**, l'image est redressée, réduite à 2400 px maximum et réencodée (moins de 4 Mo), ce qui
+  supprime aussi les métadonnées, dont la position GPS.
+- **Sur le serveur**, le vrai format est revérifié (un faux fichier est refusé), l'envoi est limité à **4 Mo**,
+  puis deux versions WebP sont produites : **1600 px** (écrans haute résolution) et **800 px** (téléphones,
+  vignettes). Le navigateur du visiteur choisit la bonne taille.
+- **Texte alternatif obligatoire**, légende facultative, et une case **autorisations** obligatoire : « aucune
+  personne reconnaissable » ou « accord écrit des personnes, et des parents ou tuteurs pour les mineurs ».
+  Sans accord écrit, ne publiez pas de photo où l'on reconnaît un enfant ou un bénéficiaire.
+- **Documents** : PDF uniquement, 4 Mo maximum chacun.
+- **Où sont stockés les fichiers** : dans le magasin **Vercel Blob** privé (dossier `fhs/img/` et `fhs/doc/`), ou
+  dans `data/uploads/` en local. Ils sont diffusés par `/media/<identifiant>/<lg|md|pdf>`, qui ne répond aux
+  visiteurs que si la fiche est publiée. Remplacer ou retirer une image d'une fiche supprime l'ancien fichier
+  à l'enregistrement ; les imports abandonnés sont nettoyés après 24 heures.
+
+### Historique
+
+Chaque création, modification, publication, retrait, archivage, suppression, validation de montants et
+changement de compte est enregistré avec l'auteur, la date et l'action (menu **Historique**, administrateurs).
+Aucune donnée sensible n'y figure (ni mot de passe, ni adresse IP).
+
+### Sauvegarde
+
+- **Base de données** : Neon conserve un historique permettant de restaurer la base à un instant passé
+  (*Restore*, durée selon votre offre). Faites aussi, chaque mois, un export complet depuis un ordinateur :
+  `pg_dump "$DATABASE_URL" > sauvegarde-AAAA-MM-JJ.sql` (toutes les données sont dans la table `fhs_documents`).
+  Restauration : `psql "$DATABASE_URL" < sauvegarde-AAAA-MM-JJ.sql`.
+- **Images et documents** : téléchargez le contenu du magasin Blob (Vercel > Storage > Blob > *Browse*, ou
+  l'outil en ligne de commande `vercel blob`). Gardez les sauvegardes dans un endroit protégé : elles
+  contiennent des données personnelles (comptes, messages).
+- **En local** : sauvegardez le dossier `data/`.
+
+### Ce qui fonctionne en local et ce qui demande une configuration
+
+| Situation | Fonctionnement |
+|---|---|
+| Sur votre ordinateur, sans variable | Tout fonctionne : données dans `data/db/`, images dans `data/uploads/`. Il faut seulement `AUTH_SECRET` et `ADMIN_SETUP_TOKEN` dans `.env.local` pour se connecter. |
+| Serveur avec disque persistant (VPS) | Comme en local ; sauvegardez `data/`. Une base PostgreSQL reste recommandée. |
+| Vercel sans base ni Blob | Le site public fonctionne (aucune activité affichée), l'administration affiche « Configuration ». Les messages de contact ne sont enregistrés que si `FORMS_WEBHOOK_URL` est défini. |
+| Vercel avec Neon, Blob, `AUTH_SECRET` | Tout fonctionne et les données sont conservées. |
+
+Ce qui a été vérifié avant livraison : le parcours complet (installation, comptes, fiche avec image et PDF,
+publication, validation du budget, événement passé, droits de l'éditeur, archivage, suppression, refus des faux
+fichiers et des requêtes non autorisées) avec une vraie base PostgreSQL 16 et avec le stockage local.
+**Vercel Blob n'a pas pu être testé** sans magasin réel : faites un essai d'import d'image après sa création.
 
 ### Limites connues
 
-- **Don mensuel** : désactivé. La documentation PayTech consultée ne décrit pas de paiement récurrent.
-- **E-mail de confirmation et reçus** : non envoyés. Le site l'indique honnêtement au donateur. À ajouter avec
-  un service d'e-mail transactionnel une fois la politique de reçus validée.
-- **Remboursements** : l'API PayTech `refund-payment` existe mais n'est pas branchée (opération à faire depuis
-  le tableau de bord PayTech, ou à développer).
-- L'appel réel à PayTech n'a pas pu être testé depuis l'environnement de développement (pas d'identifiants) :
-  la création de paiement, la redirection et l'IPN signée ont été testées avec des clés fictives et des
-  notifications simulées. Un essai en mode `test` avec les vraies clés est indispensable.
+- Le limiteur de tentatives de connexion est en mémoire : sur Vercel, chaque instance a son propre compteur.
+  Activez en plus la protection de Vercel (*Firewall*) si des attaques sont constatées.
+- Pas d'envoi d'e-mail (mot de passe oublié, notification de nouveau message) : ce serait à ajouter avec un
+  service d'e-mail transactionnel.
+- Les actualités, la galerie et les rapports restent dans le code (`src/content/`).
+
+## Dons : état actuel et activation future de PayTech
+
+### Aujourd'hui
+
+- Aucun paiement n'est intégré ni simulé. La page `/faire-un-don` (« Nous soutenir ») explique que le paiement
+  en ligne sera bientôt disponible, qu'aucun don ne peut être encaissé sur le site, et invite à contacter la
+  fondation. Aucune coordonnée bancaire n'y est publiée.
+- Le site ne demande jamais de coordonnées bancaires, de numéro de carte ni de code Mobile Money.
+- Le code PayTech est **préparé mais non branché** (`src/lib/payments/`) : client de création de paiement
+  (`paytech.ts`) et vérification de la signature des notifications (`paytech-signature.ts`, testée). Aucune
+  route du site ne l'utilise. `donationConfig.onlineDonationsEnabled` vaut `false`.
+- Devises prévues (`donationConfig.plannedCurrencies`) : **XOF/FCFA, EUR, USD, CAD, GBP, MAD**, codes acceptés
+  par PayTech dans le paramètre `currency`. Aucune n'est présentée comme disponible.
+
+### Activer PayTech plus tard
+
+Documentation de référence : <https://docs.intech.sn/doc_paytech.php>.
+
+1. **Compte** : créer le compte sur paytech.sn et demander son activation (contact@paytech.sn, objet
+   « Activation Compte PayTech », pièces demandées : notamment NINEA et documents de la fondation).
+2. **Confirmer par écrit avec PayTech** : les moyens de paiement ouverts au compte (Orange Money, Wave, Free
+   Money, carte…), les **devises** réellement acceptées pour ce compte parmi XOF, EUR, USD, CAD, GBP, MAD, les
+   frais, et l'existence ou non du don récurrent (non décrit dans la documentation consultée).
+3. **Clés** : récupérer la clé API et la clé secrète dans le tableau de bord PayTech, et les ajouter
+   **uniquement** dans Vercel > Settings > Environment Variables : `PAYTECH_API_KEY`, `PAYTECH_API_SECRET`,
+   `PAYTECH_ENV=test`. Jamais dans le code, jamais dans une variable `NEXT_PUBLIC_*`.
+4. **Développement** (à faire par un développeur, environ une journée) :
+   - une route serveur `POST /api/dons` qui valide montant, devise et affectation, enregistre le don « en
+     attente » dans la base (collection `dons`) avec une référence unique, puis appelle `requestPayment()` ;
+   - une route `POST /api/paytech/ipn` qui vérifie la signature avec `verifyIpn()`, contrôle référence, montant,
+     devise et environnement, et **seule** fait passer un don à « payé » (jamais sur la base d'un retour visible
+     dans le navigateur) ;
+   - les pages de retour (merci, annulé) qui affichent l'état lu sur le serveur ;
+   - le formulaire de don (montants en FCFA 2 000 à 50 000 et montant libre, choix de la devise si confirmé) ;
+   - les logos de moyens de paiement, **seulement** ceux confirmés par PayTech (`confirmedPaymentMethods`).
+5. **Essais** en `PAYTECH_ENV=test` : paiement réussi, annulé, échoué, notification rejouée, montant modifié.
+   En mode test, PayTech débite un petit montant (100 à 150 FCFA d'après sa documentation).
+6. **Ouverture** : passer `onlineDonationsEnabled` à `true`, `PAYTECH_ENV=prod`, mettre à jour la page
+   « Conditions de don », la FAQ et la politique de confidentialité, puis faire un vrai don de faible montant.
 
 ## Logo et images
 
@@ -172,18 +298,11 @@ Le module `src/lib/env.ts` est marqué `server-only` : le build échoue s'il est
 
 Les photos mettant des enfants au premier plan ont été volontairement écartées.
 
-## Stockage des données et hébergement
+## Messages des formulaires
 
-Les dons et messages sont enregistrés en JSON dans `DATA_DIR` (par défaut `./data`, fichiers en lecture
-restreinte). Cela convient à un **serveur Node avec disque persistant** (VPS, conteneur avec volume, hébergeur
-Node managé). Pensez à sauvegarder ce dossier et à le protéger (il contient des données personnelles).
-
-Sur une plateforme « serverless » comme Vercel, le disque n'est pas persistant (le site y écrit par défaut dans `/tmp`, ce qui suffit pour une démonstration en mode simulation, mais les données peuvent disparaître à tout moment) : remplacez `src/lib/store.ts`
-par une base de données (PostgreSQL, Turso/SQLite…) en gardant les mêmes fonctions `mutate` et `findOne`.
-Le limiteur de débit est en mémoire : derrière plusieurs instances, ajoutez une limite au niveau de l'hébergeur.
-
-Les messages de contact peuvent aussi être transférés vers un webhook HTTPS (`FORMS_WEBHOOK_URL`) pour être
-reçus par e-mail via Make, Zapier, n8n, etc.
+Les messages (contact, bénévolat, partenariat) sont enregistrés dans la base de données et consultables par les
+administrateurs dans **Administration > Messages**. Ils peuvent aussi être transférés vers un webhook HTTPS
+(`FORMS_WEBHOOK_URL`) pour être reçus par e-mail via Make, Zapier, n8n, etc.
 
 ## Sécurité, accessibilité et performances
 
@@ -192,7 +311,10 @@ reçus par e-mail via Make, Zapier, n8n, etc.
   minimal anti-robots, sans captcha contraignant.
 - Navigation au clavier, lien d'évitement, focus visible, libellés et messages d'erreur reliés aux champs,
   annonces pour lecteurs d'écran, contrastes AA, réduction des animations respectée (`prefers-reduced-motion`).
-- Pages statiques pré-générées, illustrations vectorielles légères, polices optimisées, aucune bibliothèque
+- Pages légères, images en WebP aux bonnes dimensions, polices optimisées, aucune bibliothèque
   JavaScript tierce.
-- SEO : titres et descriptions par page, Open Graph, image de partage générée, `sitemap.xml`, `robots.txt`,
-  données structurées FAQ. Les pages d'exemple et de paiement ne sont pas indexées.
+- SEO : titres et descriptions par page, Open Graph, image de partage générée, `sitemap.xml` (fiches publiées
+  incluses automatiquement), `robots.txt`, données structurées FAQ. L'administration n'est pas indexée.
+- Administration : mots de passe hachés (scrypt), cookie de session `HttpOnly`, `SameSite=Lax` et `Secure`,
+  expiration après 8 heures, vérification d'origine sur chaque modification, droits vérifiés côté serveur pour
+  chaque action, validation serveur de toutes les données, limitation des tentatives de connexion.

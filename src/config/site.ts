@@ -104,7 +104,7 @@ export const navigation = [
   { href: "/", label: "Accueil" },
   { href: "/qui-sommes-nous", label: "Qui sommes-nous ?" },
   { href: "/programmes", label: "Nos programmes" },
-  { href: "/projets", label: "Projets" },
+  { href: "/activites", label: "Activités" },
   { href: "/transparence", label: "Transparence" },
   { href: "/actualites", label: "Actualités" },
   { href: "/galerie", label: "Galerie" },

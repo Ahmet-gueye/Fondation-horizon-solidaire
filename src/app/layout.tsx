@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit, Source_Sans_3 } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { RevealObserver } from "@/components/Reveal";
 import { site } from "@/config/site";
-import { getDictionary } from "@/i18n";
 import "./globals.css";
 
 // Polices auto-hébergées par Next.js au moment du build : aucune requête vers Google côté visiteur.
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap", weight: ["500", "600", "700"] });
 const sourceSans = Source_Sans_3({ subsets: ["latin"], variable: "--font-source", display: "swap" });
-
-const t = getDictionary();
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -41,15 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Active les animations d'apparition seulement si JavaScript fonctionne. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
-      <body>
-        <a href="#contenu" className="skip-link">{t.skipToContent}</a>
-        <Header />
-        <main id="contenu" tabIndex={-1}>
-          {children}
-        </main>
-        <Footer />
-        <RevealObserver />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

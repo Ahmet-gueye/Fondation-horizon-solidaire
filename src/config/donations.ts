@@ -1,48 +1,35 @@
 /**
- * Règles du parcours de don (non secrètes, partagées entre le navigateur et le serveur).
- * Les clés PayTech, elles, sont lues UNIQUEMENT côté serveur (voir `src/lib/env.ts`).
+ * Dons en ligne — ÉTAT ACTUEL : DÉSACTIVÉS.
+ *
+ * Le compte PayTech de la fondation n'est pas encore activé. Le site n'affiche donc
+ * aucun formulaire de paiement, aucun bouton « Payer » et aucun moyen de paiement.
+ * `onlineDonationsEnabled` ne doit passer à true qu'après :
+ *   1. l'activation du compte PayTech et la réception des clés ;
+ *   2. l'ajout des routes de paiement et d'IPN (voir README) ;
+ *   3. des essais complets en mode test PayTech.
  */
-
 export const donationConfig = {
-  currency: "XOF" as const,
-  currencyLabel: "FCFA",
-  /** Montants suggérés, en francs CFA. */
-  suggestedAmounts: [2000, 5000, 10000, 25000, 50000],
-  defaultAmount: 10000,
-  /** Bornes de validation (vérifiées aussi côté serveur). */
-  minAmount: 500,
-  maxAmount: 5_000_000,
+  onlineDonationsEnabled: false,
 
   /**
-   * Don périodique : la documentation officielle PayTech consultée (docs.intech.sn)
-   * ne décrit pas de paiement récurrent. L'option reste donc affichée comme
-   * « non disponible » tant que `recurringEnabled` vaut false.
+   * Devises prévues pour l'évolution future (codes acceptés par PayTech dans le
+   * paramètre `currency`). AUCUNE n'est disponible tant que les dons sont désactivés.
    */
-  recurringEnabled: false,
+  plannedCurrencies: [
+    { code: "XOF", label: "Franc CFA (FCFA)" },
+    { code: "EUR", label: "Euro" },
+    { code: "USD", label: "Dollar américain" },
+    { code: "CAD", label: "Dollar canadien" },
+    { code: "GBP", label: "Livre sterling" },
+    { code: "MAD", label: "Dirham marocain" },
+  ],
 
-  /**
-   * Don anonyme : à confirmer par la fondation selon ses obligations légales.
-   * Si true, le donateur peut ne pas renseigner son nom ni son e-mail.
-   */
-  allowAnonymous: true,
-
-  /** Téléphone demandé sur le site ? PayTech le demande lui-même sur sa page de paiement. */
-  askPhone: false,
-
-  /**
-   * Texte sur les frais, affiché dans le résumé AVANT paiement.
-   * À valider par la fondation après lecture du contrat PayTech.
-   */
-  feesNotice:
-    "Information sur les frais éventuels à confirmer par la fondation avant la mise en ligne. Le montant exact à régler est affiché par PayTech avant toute validation.",
+  /** Montants envisagés en FCFA (non utilisés tant que les dons sont désactivés). */
+  suggestedAmountsXof: [2000, 5000, 10000, 25000, 50000],
 
   /**
    * Moyens de paiement CONFIRMÉS par PayTech pour le compte de la fondation.
-   * Laisser vide tant que la liste n'est pas confirmée par écrit : rien ne s'affiche.
-   * Valeurs possibles (doc. PayTech) : "Orange Money", "Wave", "Free Money",
-   * "Carte Bancaire", "Emoney", "Wizall", …
+   * Vide tant que rien n'est confirmé par écrit : aucun logo ne s'affiche.
    */
   confirmedPaymentMethods: [] as string[],
 };
-
-export type DonationFrequency = "ponctuel" | "mensuel";

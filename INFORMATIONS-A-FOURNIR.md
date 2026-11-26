@@ -37,9 +37,9 @@ et le fichier où le renseigner.
 - Confirmation des programmes réellement menés. Le programme « Eau, hygiène et assainissement »
   est masqué tant qu'il n'est pas confirmé (`confirmed: false`) → `src/content/programmes.ts`
 - Pour chaque programme : activités, zones, calendrier, budget, résultats vérifiés, photos avec consentement
-- Pour chaque projet réel : région ou commune, besoin, bénéficiaires visés, objectifs, étapes, budget,
-  **montant reçu vérifié et date de mise à jour**, calendrier, résultats → `src/content/projets.ts`
-- Le projet à mettre en avant sur l'accueil (`featured: true`, uniquement avec des chiffres réels)
+- Les activités, événements, projets et campagnes réels : ils se saisissent désormais dans l'espace
+  d'administration (`/admin`), avec lieu, dates, calendrier, budget validé, photos autorisées et documents
+- Les personnes qui auront un compte (administrateurs et éditeurs)
 
 ## 6. Chiffres d'impact
 
@@ -56,20 +56,23 @@ et le fichier où le renseigner.
 - Relecture des questions fréquentes → `src/content/faq.ts`
 - Passer `site.showExamples` à `false` pour retirer tous les exemples de démonstration
 
-## 8. Dons et paiement
+## 8. Dons et paiement (le don en ligne n'est pas encore ouvert)
 
-- **Accès PayTech** : compte créé et **activé en production** (PayTech demande notamment NINEA,
-  pièce d'identité, registre de commerce ou équivalent, statuts, justificatif d'adresse : à vérifier
-  auprès de PayTech pour une fondation)
-- Clé API et clé secrète (à saisir chez l'hébergeur, **jamais** dans le code ni par e-mail non chiffré)
-- **Moyens de paiement confirmés** par PayTech pour votre compte (Orange Money, Wave, Free Money,
-  carte bancaire…) → `PAYTECH_TARGET_PAYMENT` et `donationConfig.confirmedPaymentMethods`
-- Frais appliqués et qui les supporte → `donationConfig.feesNotice`
-- Montants minimum et maximum souhaités → `donationConfig.minAmount` / `maxAmount`
+- **Activation du compte PayTech** (PayTech demande notamment NINEA, pièce d'identité, statuts, justificatif
+  d'adresse : à vérifier auprès de PayTech pour une fondation)
+- Clé API et clé secrète, à saisir **uniquement** chez l'hébergeur (jamais dans le code ni par e-mail non chiffré)
+- **Confirmation écrite de PayTech** : moyens de paiement ouverts (Orange Money, Wave, Free Money, carte…),
+  devises acceptées pour votre compte parmi XOF, EUR, USD, CAD, GBP et MAD, frais, don récurrent possible ou non
 - Politique de dons : affectation et réaffectation, dons anonymes autorisés ou non, remboursements
-- Don mensuel : la documentation PayTech consultée ne décrit pas de paiement récurrent ; à confirmer avec PayTech
 - Reçus et fiscalité : possibilité légale d'émettre des reçus, mentions obligatoires
-- E-mail de confirmation automatique : à prévoir seulement avec un service d'envoi configuré
+- En attendant : la façon dont la fondation souhaite recevoir les soutiens provisoires (le site invite seulement
+  à la contacter, sans publier de coordonnées bancaires)
+
+## 8 bis. Hébergement et administration
+
+- Accès au compte Vercel du site, pour ajouter la base Neon, le magasin Blob et les variables `AUTH_SECRET`
+  et `ADMIN_SETUP_TOKEN` (voir README, « Espace d'administration »)
+- La personne qui créera le premier compte administrateur
 
 ## 9. Données personnelles et mentions légales
 

@@ -9,19 +9,19 @@ export const faq: { question: string; answer: string }[] = [
       "Chaque don est enregistré, affecté au projet choisi ou aux besoins prioritaires de la fondation s'il n'est pas affecté, puis suivi jusqu'à son utilisation. La page Transparence détaille ces étapes et regroupe les rapports publiés.",
   },
   {
-    question: "Le paiement en ligne est-il sécurisé ?",
+    question: "Puis-je faire un don en ligne ?",
     answer:
-      "Le paiement est réalisé sur la page sécurisée de notre prestataire PayTech. Le site de la fondation ne demande ni ne conserve jamais vos coordonnées bancaires ou vos codes de paiement mobile.",
+      "Le paiement en ligne n'est pas encore ouvert : aucun don ne peut être encaissé sur le site pour le moment. Il passera par la plateforme sécurisée PayTech. Le site de la fondation ne demande ni ne conserve jamais vos coordonnées bancaires, votre numéro de carte ou vos codes Mobile Money.",
   },
   {
     question: "Puis-je choisir le projet que je soutiens ?",
     answer:
-      "Oui, lorsqu'un projet est ouvert aux dons, vous pouvez le sélectionner dans le formulaire. Vous pouvez aussi faire un don général, qui permet à la fondation d'agir là où le besoin est le plus urgent.",
+      "Les modalités seront précisées à l'ouverture du don en ligne. En attendant, contactez la fondation pour échanger sur le projet que vous souhaitez soutenir.",
   },
   {
     question: "Vais-je recevoir un reçu fiscal ?",
     answer:
-      "La délivrance d'un reçu et les éventuels avantages fiscaux dépendent du statut juridique de la fondation et de la législation applicable. Ces informations seront précisées par la fondation. En attendant, une confirmation s'affiche à l'écran après un paiement validé.",
+      "La délivrance d'un reçu et les éventuels avantages fiscaux dépendent du statut juridique de la fondation et de la législation applicable. Ces informations seront précisées par la fondation. ",
   },
   {
     question: "Comment devenir bénévole ?",

@@ -4,7 +4,7 @@ out/
 .env
 .env.local
 .env.*.local
-data/*.json
+data/*
 !data/.gitkeep
 *.log
 .DS_Store

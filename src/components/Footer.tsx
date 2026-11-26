@@ -32,7 +32,7 @@ export function Footer() {
             <ul>
               <li><Link href="/qui-sommes-nous">Qui sommes-nous ?</Link></li>
               <li><Link href="/programmes">Nos programmes</Link></li>
-              <li><Link href="/projets">Projets</Link></li>
+              <li><Link href="/activites">Activités et campagnes</Link></li>
               <li><Link href="/transparence">Transparence et rapports</Link></li>
               <li><Link href="/actualites">Actualités</Link></li>
               <li><Link href="/galerie">Galerie</Link></li>
@@ -42,7 +42,7 @@ export function Footer() {
           <div>
             <p className="footer-title">{t.footer.act}</p>
             <ul>
-              <li><Link href="/faire-un-don">Faire un don</Link></li>
+              <li><Link href="/faire-un-don">Nous soutenir</Link></li>
               <li><Link href="/engagez-vous#benevolat">Devenir bénévole</Link></li>
               <li><Link href="/engagez-vous#partenariat">Proposer un partenariat</Link></li>
               <li><Link href="/contact">Nous écrire</Link></li>

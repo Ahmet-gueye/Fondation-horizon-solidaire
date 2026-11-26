@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { getFormsWebhook } from "@/lib/env";
 import { clientIp, isJson, isSameOrigin, jsonError, logEvent, looksLikeSpam, rateLimit } from "@/lib/security";
-import { mutate } from "@/lib/store";
+import { StorageNotConfigured, getStore } from "@/lib/db/docstore";
 import { contactTypes, validateContact, type ContactInput } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -43,10 +43,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    await mutate<StoredMessage, void>("messages", (rows) => ({ rows: [...rows, message], result: undefined }));
+    await getStore().insert<StoredMessage>("messages", message.id, message);
     delivered = true;
   } catch (err) {
-    logEvent("contact.stockage.erreur", { message: (err as Error).message });
+    if (!(err instanceof StorageNotConfigured)) logEvent("contact.stockage.erreur", { message: (err as Error).message });
   }
 
   logEvent("contact.recu", { type: message.type, transmis: delivered });

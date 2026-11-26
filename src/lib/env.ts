@@ -6,53 +6,46 @@ import "server-only";
  * (`server-only` provoque une erreur de build si c'est le cas).
  */
 
-export type PaymentMode = "simulation" | "test" | "prod";
-
-function readMode(): PaymentMode {
-  const raw = (process.env.PAYTECH_MODE ?? "simulation").trim().toLowerCase();
-  if (raw === "test" || raw === "prod") return raw;
-  return "simulation";
-}
-
-export function getPaymentConfig() {
-  const mode = readMode();
-  const apiKey = process.env.PAYTECH_API_KEY?.trim() ?? "";
-  const apiSecret = process.env.PAYTECH_API_SECRET?.trim() ?? "";
-  const hasCredentials = apiKey.length > 0 && apiSecret.length > 0;
-
-  // Sécurité : sans identifiants, on reste en simulation, quel que soit le mode demandé.
-  const effectiveMode: PaymentMode = mode !== "simulation" && !hasCredentials ? "simulation" : mode;
-
-  return {
-    mode: effectiveMode,
-    requestedMode: mode,
-    hasCredentials,
-    apiKey,
-    apiSecret,
-    apiBase: (process.env.PAYTECH_API_BASE ?? "https://paytech.sn/api").replace(/\/$/, ""),
-    /** Moyens de paiement à proposer (target_payment). Vide = tous ceux activés sur le compte. */
-    targetPayment: process.env.PAYTECH_TARGET_PAYMENT?.trim() ?? "",
-  };
-}
-
 export function getSiteUrl() {
   return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 }
 
+/** Hébergement sans disque persistant (Vercel) : le stockage local n'y est pas utilisable. */
+export function isEphemeralHost() {
+  return Boolean(process.env.VERCEL);
+}
+
+/** Dossier local des données (développement ou serveur avec disque persistant). */
 export function getDataDir() {
-  if (process.env.DATA_DIR) return process.env.DATA_DIR;
-  // Sur Vercel, seul /tmp est inscriptible (et il n'est PAS persistant) :
-  // suffisant pour une démonstration en mode simulation, pas pour la production.
-  if (process.env.VERCEL) return "/tmp/fhs-data";
-  return "./data";
+  return process.env.DATA_DIR || "./data";
+}
+
+/** URL de connexion PostgreSQL (Neon, Supabase, Vercel Postgres…). */
+export function getDatabaseUrl() {
+  const url = (process.env.DATABASE_URL || process.env.POSTGRES_URL || "").trim();
+  return url || null;
+}
+
+/** Jeton du magasin de fichiers Vercel Blob. */
+export function getBlobToken() {
+  const token = (process.env.BLOB_READ_WRITE_TOKEN || "").trim();
+  return token || null;
+}
+
+/** Secret de signature des sessions d'administration (32 caractères minimum). */
+export function getAuthSecret() {
+  const secret = (process.env.AUTH_SECRET || "").trim();
+  return secret.length >= 32 ? secret : null;
+}
+
+/** Code d'installation, utilisé une seule fois pour créer le premier administrateur. */
+export function getSetupToken() {
+  const token = (process.env.ADMIN_SETUP_TOKEN || "").trim();
+  return token.length >= 16 ? token : null;
 }
 
 /** URL facultative vers laquelle transférer les messages des formulaires (webhook HTTPS). */
 export function getFormsWebhook() {
   const url = process.env.FORMS_WEBHOOK_URL?.trim();
   return url ? url : null;
-}
-
-export function isSimulationAllowed() {
-  return getPaymentConfig().mode === "simulation";
 }
