@@ -26,10 +26,19 @@ export function getDatabaseUrl() {
   return url || null;
 }
 
-/** Jeton du magasin de fichiers Vercel Blob. */
+/** Jeton du magasin de fichiers Vercel Blob (connexion classique). */
 export function getBlobToken() {
   const token = (process.env.BLOB_READ_WRITE_TOKEN || "").trim();
   return token || null;
+}
+
+/**
+ * Identifiant du magasin Vercel Blob (connexion récente sans jeton : Vercel
+ * authentifie alors le site automatiquement, via OIDC).
+ */
+export function getBlobStoreId() {
+  const id = (process.env.BLOB_STORE_ID || "").trim();
+  return id || null;
 }
 
 /** Secret de signature des sessions d'administration (32 caractères minimum). */

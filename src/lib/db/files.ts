@@ -2,12 +2,13 @@ import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { del, get, put } from "@vercel/blob";
-import { getBlobToken, getDataDir, isEphemeralHost } from "@/lib/env";
+import { getBlobStoreId, getBlobToken, getDataDir, isEphemeralHost } from "@/lib/env";
 
 /**
  * Stockage des fichiers téléversés (images optimisées, documents PDF).
  *
- * - Vercel Blob si `BLOB_READ_WRITE_TOKEN` est défini (production sur Vercel).
+ * - Vercel Blob si `BLOB_READ_WRITE_TOKEN` ou `BLOB_STORE_ID` est défini (production sur Vercel).
+ *   Avec seulement `BLOB_STORE_ID`, le SDK s'authentifie via le jeton OIDC fourni par Vercel.
  *   Les fichiers sont déposés en accès privé (`BLOB_ACCESS=private`, par défaut) :
  *   ils ne sont lisibles qu'à travers le site, qui vérifie que la fiche est publiée.
  * - Sinon, dossier local `DATA_DIR/uploads/` (développement, serveur avec disque persistant).
@@ -36,7 +37,7 @@ function blobAccess(): "private" | "public" {
   return process.env.BLOB_ACCESS === "public" ? "public" : "private";
 }
 
-function blobStore(token: string): FileStore {
+function blobStore(token: string | undefined): FileStore {
   const access = blobAccess();
   return {
     kind: "vercel-blob",
@@ -85,14 +86,14 @@ function localStore(dir: string): FileStore {
 }
 
 export function filesKind(): FileStore["kind"] | null {
-  if (getBlobToken()) return "vercel-blob";
+  if (getBlobToken() || getBlobStoreId()) return "vercel-blob";
   if (isEphemeralHost()) return null;
   return "fichiers";
 }
 
 export function getFileStore(): FileStore {
   const token = getBlobToken();
-  if (token) return blobStore(token);
+  if (token || getBlobStoreId()) return blobStore(token ?? undefined);
   if (isEphemeralHost()) throw new FilesNotConfigured();
   return localStore(getDataDir());
 }

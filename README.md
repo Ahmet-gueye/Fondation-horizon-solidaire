@@ -110,7 +110,7 @@ qui indique ce qui manque (sans jamais afficher de valeur secrète), et le site 
 | Variable | Rôle | Comment l'obtenir |
 |---|---|---|
 | `DATABASE_URL` | Base de données (fiches, comptes, historique, messages) | Vercel > projet > **Storage** > *Create Database* > **Neon (PostgreSQL)**, puis *Connect Project* : la variable est ajoutée automatiquement (elle peut s'appeler `POSTGRES_URL`, le site accepte les deux). Tout autre PostgreSQL hébergé convient (Supabase…). |
-| `BLOB_READ_WRITE_TOKEN` | Stockage des images et PDF importés | Vercel > **Storage** > *Create* > **Blob**, accès **Private**, puis *Connect Project* : la variable est ajoutée automatiquement. |
+| `BLOB_READ_WRITE_TOKEN` ou `BLOB_STORE_ID` | Stockage des images et PDF importés | Vercel > **Storage** > *Create* > **Blob**, accès **Private**, puis *Connect Project* : la variable est ajoutée automatiquement (cocher « Add a read-write token » est possible mais pas obligatoire). |
 | `AUTH_SECRET` | Signature des sessions de connexion | Une longue chaîne aléatoire (32 caractères minimum). Sur un ordinateur : `openssl rand -base64 48`. |
 | `ADMIN_SETUP_TOKEN` | Code à usage unique pour créer le premier administrateur | Une chaîne aléatoire d'au moins 16 caractères que vous choisissez. Peut être supprimée une fois le premier compte créé. |
 

@@ -37,7 +37,7 @@ export default function ConfigPage() {
         <Row
           ok={files !== null}
           label="Stockage des images et documents"
-          detail={files === "vercel-blob" ? "Vercel Blob (BLOB_READ_WRITE_TOKEN)." : files === "fichiers" ? "Dossier local (développement uniquement)." : "BLOB_READ_WRITE_TOKEN manquant : obligatoire sur Vercel pour importer des images."}
+          detail={files === "vercel-blob" ? "Vercel Blob." : files === "fichiers" ? "Dossier local (développement uniquement)." : "Magasin Vercel Blob non relié (BLOB_READ_WRITE_TOKEN ou BLOB_STORE_ID manquant) : obligatoire sur Vercel pour importer des images."}
         />
         <Row ok={Boolean(getSetupToken())} label="ADMIN_SETUP_TOKEN" detail="Code utilisé une seule fois pour créer le premier administrateur. Peut être retiré ensuite." />
       </ul>
