@@ -89,13 +89,20 @@ Après modification : `npm run build` puis redémarrage (ou redéploiement).
 - **Vidéos** : utilisez une URL d'intégration `https://www.youtube-nocookie.com/embed/...` (déjà autorisée
   par la politique de sécurité du site, `next.config.ts`).
 
-### Préparer une version wolof ou anglaise
+### Langues : français et anglais
 
-Les textes d'interface sont centralisés dans `src/i18n/fr.ts`, et le sélecteur de langue affiche déjà
-Wolof et English comme « en préparation ». Pour activer une langue : faire traduire et **relire** les textes
-par une personne compétente (pas de traduction automatique non relue), créer `wo.ts`, passer `enabled: true`
-dans `src/i18n/index.ts`, puis ajouter un segment `[lang]` au routage (voir la documentation Next.js
-« Internationalization »).
+Le site public existe en **français** (par défaut) et en **anglais**. Le visiteur change de langue avec le
+bouton FR / EN de l'en-tête ; son choix est gardé dans un petit cookie technique (`fhs_lang`), et les adresses
+des pages ne changent pas. L'espace d'administration reste en français.
+
+- Textes des pages : écrits directement dans chaque page sous la forme `t("texte français", "English text")`
+  (fonction fournie par `src/i18n/server.ts`).
+- Programmes, FAQ, catégories, textes alternatifs des images : versions anglaises dans `src/content/`
+  (`programmesEn`, `faqEn`, champ `en` des actualités, `altEn` des images).
+- Fiches d'activités saisies dans `/admin` : publiées telles qu'elles ont été écrites (en français) ;
+  en anglais, la page précise « This page was written in French ».
+- Les traductions anglaises ont été rédigées avec soin mais doivent être **relues** par une personne
+  compétente avant une communication officielle.
 
 ## Espace d'administration
 

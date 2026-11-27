@@ -16,12 +16,12 @@ export const donationConfig = {
    * paramètre `currency`). AUCUNE n'est disponible tant que les dons sont désactivés.
    */
   plannedCurrencies: [
-    { code: "XOF", label: "Franc CFA (FCFA)" },
-    { code: "EUR", label: "Euro" },
-    { code: "USD", label: "Dollar américain" },
-    { code: "CAD", label: "Dollar canadien" },
-    { code: "GBP", label: "Livre sterling" },
-    { code: "MAD", label: "Dirham marocain" },
+    { code: "XOF", label: "Franc CFA (FCFA)", labelEn: "CFA franc (FCFA)" },
+    { code: "EUR", label: "Euro", labelEn: "Euro" },
+    { code: "USD", label: "Dollar américain", labelEn: "US dollar" },
+    { code: "CAD", label: "Dollar canadien", labelEn: "Canadian dollar" },
+    { code: "GBP", label: "Livre sterling", labelEn: "Pound sterling" },
+    { code: "MAD", label: "Dirham marocain", labelEn: "Moroccan dirham" },
   ],
 
   /** Montants envisagés en FCFA (non utilisés tant que les dons sont désactivés). */

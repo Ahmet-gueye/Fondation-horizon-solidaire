@@ -1,5 +1,6 @@
 import { site } from "@/config/site";
-import { stock } from "./images";
+import type { Locale } from "@/i18n";
+import { localizeImage, stock } from "./images";
 
 /**
  * Galerie photos et vidéos.
@@ -58,6 +59,18 @@ const items: GalleryItem[] = [
 
 export const galleryCategories: GalleryCategory[] = ["Éducation", "Santé", "Solidarité", "Événements"];
 
-export function getGalleryItems() {
-  return items.filter((i) => (i.isExample ? site.showExamples : i.consent && i.src));
+const categoryEn: Record<GalleryCategory, string> = { "Éducation": "Education", "Santé": "Health", "Solidarité": "Solidarity", "Événements": "Events" };
+export function galleryCategoryLabel(c: GalleryCategory, locale: Locale) {
+  return locale === "en" ? categoryEn[c] : c;
+}
+
+export function getGalleryItems(locale: Locale = "fr") {
+  return items
+    .filter((i) => (i.isExample ? site.showExamples : i.consent && i.src))
+    .map((i) => {
+      if (locale !== "en") return i;
+      const alt = localizeImage({ alt: i.alt }, locale).alt;
+      const caption = i.id === "ex-video" ? "Placeholder: presentation video of the foundation" : i.caption === i.alt ? alt : i.caption;
+      return { ...i, alt: i.id === "ex-video" ? "Video placeholder" : alt, caption };
+    });
 }

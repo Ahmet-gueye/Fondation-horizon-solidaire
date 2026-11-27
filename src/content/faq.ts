@@ -34,3 +34,41 @@ export const faq: { question: string; answer: string }[] = [
       "Présentez votre organisation et votre idée de collaboration via le formulaire de partenariat. Nous étudions chaque proposition au regard de nos programmes et de nos valeurs.",
   },
 ];
+
+/** Version anglaise (même ordre que la version française). */
+export const faqEn: { question: string; answer: string }[] = [
+  {
+    question: "How is my donation used?",
+    answer:
+      "Every donation is recorded, allocated to the chosen project (or to the foundation's priority needs if no project is chosen), and then tracked until it is spent. The Transparency page explains these steps and gathers the published reports.",
+  },
+  {
+    question: "Can I donate online?",
+    answer:
+      "Online payment is not open yet: no donation can be collected on the website for the moment. It will go through the secure PayTech platform. The foundation's website never asks for or stores your bank details, card number or Mobile Money codes.",
+  },
+  {
+    question: "Can I choose the project I support?",
+    answer:
+      "The details will be given when online giving opens. In the meantime, contact the foundation to discuss the project you would like to support.",
+  },
+  {
+    question: "Will I receive a tax receipt?",
+    answer:
+      "Whether a receipt can be issued, and any tax benefit, depends on the foundation's legal status and on the applicable law. The foundation will provide this information.",
+  },
+  {
+    question: "How can I become a volunteer?",
+    answer:
+      "Fill in the form on the “Get involved” page, telling us when you are available and what your skills are. The team will get back to you to discuss possible missions.",
+  },
+  {
+    question: "My organisation would like to become a partner. What should we do?",
+    answer:
+      "Introduce your organisation and your idea for working together through the partnership form. We look at every proposal in the light of our programmes and our values.",
+  },
+];
+
+export function getFaq(locale: "fr" | "en") {
+  return locale === "en" ? faqEn : faq;
+}

@@ -7,12 +7,16 @@ export function CategoryFilter({
   categories,
   items,
   label,
+  allLabel = "Tout",
+  countLabel = "élément(s) affiché(s)",
   gridClass = "grid grid-3",
   emptyText = "Aucun élément dans cette catégorie pour le moment.",
 }: {
-  categories: string[];
+  categories: { value: string; label: string }[];
   items: { key: string; category: string; node: React.ReactNode }[];
   label: string;
+  allLabel?: string;
+  countLabel?: string;
   gridClass?: string;
   emptyText?: string;
 }) {
@@ -21,12 +25,12 @@ export function CategoryFilter({
   return (
     <>
       <div className="chips" role="group" aria-label={label}>
-        <button type="button" className="chip" aria-pressed={active === ""} onClick={() => setActive("")}>Tout</button>
+        <button type="button" className="chip" aria-pressed={active === ""} onClick={() => setActive("")}>{allLabel}</button>
         {categories.map((c) => (
-          <button key={c} type="button" className="chip" aria-pressed={active === c} onClick={() => setActive(c)}>{c}</button>
+          <button key={c.value} type="button" className="chip" aria-pressed={active === c.value} onClick={() => setActive(c.value)}>{c.label}</button>
         ))}
       </div>
-      <p className="visually-hidden" role="status" aria-live="polite">{visible.length} élément(s) affiché(s)</p>
+      <p className="visually-hidden" role="status" aria-live="polite">{visible.length} {countLabel}</p>
       {visible.length > 0 ? (
         <div className={gridClass}>{visible.map((i) => <div key={i.key} style={{ display: "contents" }}>{i.node}</div>)}</div>
       ) : (

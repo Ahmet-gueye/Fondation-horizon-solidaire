@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { site, type ImpactIndicator } from "@/config/site";
-import { getPublicProgrammes, type Programme } from "@/content/programmes";
+import type { Programme } from "@/content/programmes";
 import type { Article } from "@/content/actualites";
-import { formatDate, formatFCFA, formatNumber, percent } from "@/lib/format";
-import { getDictionary } from "@/i18n";
+import { formatDate, formatNumber } from "@/lib/format";
+import { i18n } from "@/i18n/server";
 import { Icon } from "./Icon";
-import { ExampleBadge, MediaSlot, ToComplete } from "./Markers";
+import { ExampleBadge, MediaSlot } from "./Markers";
 import { Picture } from "./Picture";
 
-const t = getDictionary();
-
-export function Breadcrumbs({ items }: { items: { href?: string; label: string }[] }) {
+export async function Breadcrumbs({ items }: { items: { href?: string; label: string }[] }) {
+  const { t } = await i18n();
   return (
-    <nav className="breadcrumbs" aria-label="Fil d'Ariane">
+    <nav className="breadcrumbs" aria-label={t("Fil d'Ariane", "Breadcrumb")}>
       <ol>
-        <li><Link href="/">Accueil</Link></li>
+        <li><Link href="/">{t("Accueil", "Home")}</Link></li>
         {items.map((it, i) => (
           <li key={i}>
             {it.href && i < items.length - 1 ? <Link href={it.href}>{it.label}</Link> : <span aria-current="page">{it.label}</span>}
@@ -61,28 +60,31 @@ export function SectionHead({ eyebrow, title, lead, center, id }: { eyebrow?: st
   );
 }
 
-export function ImpactStats({ items }: { items: ImpactIndicator[] }) {
+export async function ImpactStats({ items }: { items: ImpactIndicator[] }) {
+  const { locale, t } = await i18n();
   return (
     <ul className="stats" role="list">
       {items.map((s) => (
         <li key={s.label} className="stat">
           {s.value !== null ? (
             <span className="stat-value">
-              {formatNumber(s.value)}
+              {formatNumber(s.value, locale)}
               {s.suffix ?? ""}
             </span>
           ) : (
-            <span className="stat-pending">{t.dataToFill}</span>
+            <span className="stat-pending">{t("Données à renseigner", "Figures to come")}</span>
           )}
-          <span className="stat-label">{s.label}</span>
-          {s.value !== null && s.source ? <span className="stat-source">Source : {s.source}</span> : null}
+          <span className="stat-label">{locale === "en" && s.labelEn ? s.labelEn : s.label}</span>
+          {s.value !== null && s.source ? <span className="stat-source">{t("Source :", "Source:")} {s.source}</span> : null}
         </li>
       ))}
     </ul>
   );
 }
 
-export function ProgrammeCard({ programme }: { programme: Programme }) {
+/** Le programme passé doit déjà être dans la langue du visiteur (getPublicProgrammes(locale)). */
+export async function ProgrammeCard({ programme }: { programme: Programme }) {
+  const { t } = await i18n();
   return (
     <article className="card card-link reveal">
       {programme.cover ? (
@@ -94,43 +96,51 @@ export function ProgrammeCard({ programme }: { programme: Programme }) {
       <h3><Link href={`/programmes/${programme.slug}`}>{programme.title}</Link></h3>
       <p>{programme.summary}</p>
       <div className="card-foot">
-        <span className="link-arrow" aria-hidden="true">Découvrir</span>
+        <span className="link-arrow" aria-hidden="true">{t("Découvrir", "Discover")}</span>
       </div>
     </article>
   );
 }
 
-export function NewsCard({ article }: { article: Article }) {
+export async function NewsCard({ article }: { article: Article }) {
+  const { locale, t } = await i18n();
   return (
     <article className="card card-link reveal">
       <div className="card-media">
         {article.image ? (
           <Picture image={article.image} caption={false} />
         ) : (
-          <MediaSlot label="Image de l'article à fournir" ratio="16 / 9" />
+          <MediaSlot label={t("Image de l'article à fournir", "Article image to come")} ratio="16 / 9" />
         )}
       </div>
       <div className="row-wrap">
-        {article.isExample ? <ExampleBadge label={t.fictional} /> : null}
-        <span className="badge">{article.category}</span>
+        {article.isExample ? <ExampleBadge label={t("Exemple fictif", "Fictional example")} /> : null}
+        <span className="badge">{article.categoryLabel}</span>
       </div>
       <h3><Link href={`/actualites/${article.slug}`}>{article.title}</Link></h3>
-      <p className="meta"><Icon name="calendar" /><time dateTime={article.date}>{formatDate(article.date)}</time></p>
+      <p className="meta"><Icon name="calendar" /><time dateTime={article.date}>{formatDate(article.date, locale)}</time></p>
       <p>{article.summary}</p>
     </article>
   );
 }
 
-export function DonateBand({ title, text }: { title?: string; text?: string }) {
+export async function DonateBand({ title, text }: { title?: string; text?: string }) {
+  const { t } = await i18n();
   return (
     <div className="cta-band reveal">
       <div>
-        <h2>{title ?? "Votre soutien change des trajectoires"}</h2>
-        <p>{text ?? "Le don en ligne ouvrira bientôt. En attendant, contactez la fondation pour savoir comment soutenir ses actions aux côtés des communautés du Sénégal."}</p>
+        <h2>{title ?? t("Votre soutien change des trajectoires", "Your support changes lives")}</h2>
+        <p>
+          {text ??
+            t(
+              "Le don en ligne ouvrira bientôt. En attendant, contactez la fondation pour savoir comment soutenir ses actions aux côtés des communautés du Sénégal.",
+              "Online giving will open soon. In the meantime, contact the foundation to find out how to support its work alongside communities in Senegal.",
+            )}
+        </p>
       </div>
       <div className="cta-actions">
-        <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />Nous soutenir</Link>
-        <Link href="/transparence" className="btn btn-light">Comment les dons sont utilisés</Link>
+        <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />{t("Nous soutenir", "Support us")}</Link>
+        <Link href="/transparence" className="btn btn-light">{t("Comment les dons sont utilisés", "How donations are used")}</Link>
       </div>
     </div>
   );

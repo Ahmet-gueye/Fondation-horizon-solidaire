@@ -9,14 +9,16 @@ import { listPublicFiches } from "@/lib/fiches/repo";
 import { publishedBudget, startDay, timing, type Fiche } from "@/lib/fiches/model";
 import { formatFCFA } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
+import { i18n } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getProgramme(slug);
+  const { locale } = await i18n();
+  const p = getProgramme(slug, locale);
   if (!p) return {};
-  return pageMetadata({ title: p.title, description: p.summary, path: `/programmes/${p.slug}` });
+  return pageMetadata({ title: p.title, description: p.summary, path: `/programmes/${p.slug}`, locale });
 }
 
 /**
@@ -36,7 +38,8 @@ function overview(fiches: Fiche[]) {
 
 export default async function ProgrammePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getProgramme(slug);
+  const { locale, t } = await i18n();
+  const p = getProgramme(slug, locale);
   if (!p) notFound();
   const fiches = (await listPublicFiches()).filter((f) => f.domain === p.slug);
   const o = overview(fiches);
@@ -45,48 +48,49 @@ export default async function ProgrammePage({ params }: { params: Promise<{ slug
 
   return (
     <>
-      <PageHero title={p.title} eyebrow="Programme" lead={p.summary} crumbs={[{ href: "/programmes", label: "Nos programmes" }, { label: p.shortTitle }]}>
+      <PageHero title={p.title} eyebrow={t("Programme", "Programme")} lead={p.summary} crumbs={[{ href: "/programmes", label: t("Nos programmes", "Our programmes") }, { label: p.shortTitle }]}>
         <div className="hero-actions">
-          <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />Soutenir ce programme</Link>
+          <Link href="/faire-un-don" className="btn btn-sun"><Icon name="heart" />{t("Soutenir ce programme", "Support this programme")}</Link>
         </div>
       </PageHero>
 
       <section className="section">
         <div className="container split" style={{ alignItems: "start" }}>
           <div className="prose">
-            <h2>Objectif</h2>
+            <h2>{t("Objectif", "Goal")}</h2>
             <p>{p.objective}</p>
             {p.audiences.length ? (
               <>
-                <h2>Pour qui ?</h2>
+                <h2>{t("Pour qui ?", "Who is it for?")}</h2>
                 <ul className="chip-list">{p.audiences.map((a) => <li key={a}><Icon name="users" />{a}</li>)}</ul>
               </>
             ) : null}
 
-            <h2>Nos actions</h2>
+            <h2>{t("Nos actions", "Our actions")}</h2>
             {p.activities.length ? (
-              <ul>{p.activities.map((a) => <li key={a}>{a}</li>)}</ul>
+              <ul lang="fr">{p.activities.map((a) => <li key={a}>{a}</li>)}</ul>
             ) : fiches.length ? (
               <ul className="action-list">
                 {fiches.slice(0, 6).map((f) => (
                   <li key={f.id}>
                     <Link href={`/activites/${f.slug}`}>{f.title}</Link>
-                    <span className="small muted">{f.schedule.kind !== "a_definir" ? scheduleLabel(f.schedule) : f.summary}</span>
+                    <span className="small muted">{f.schedule.kind !== "a_definir" ? scheduleLabel(f.schedule, locale) : f.summary}</span>
                   </li>
                 ))}
               </ul>
             ) : (
               <p>
-                Chaque action de ce programme (atelier, distribution, campagne, événement…) est présentée sur ce site
-                avec ses dates, son lieu, ses photos et, une fois validé, son budget. Vous la retrouverez ci-dessous
-                dès sa publication.
+                {t(
+                  "Chaque action de ce programme (atelier, distribution, campagne, événement…) est présentée sur ce site avec ses dates, son lieu, ses photos et, une fois validé, son budget. Vous la retrouverez ci-dessous dès sa publication.",
+                  "Each action in this programme (workshop, distribution, campaign, event…) is presented on this website with its dates, place, photos and, once validated, its budget. You will find it below as soon as it is published.",
+                )}
               </p>
             )}
 
             {p.verifiedResults.length ? (
               <>
-                <h2>Résultats vérifiés</h2>
-                <ul>{p.verifiedResults.map((r) => <li key={r}>{r}</li>)}</ul>
+                <h2>{t("Résultats vérifiés", "Verified results")}</h2>
+                <ul lang="fr">{p.verifiedResults.map((r) => <li key={r}>{r}</li>)}</ul>
               </>
             ) : null}
           </div>
@@ -109,25 +113,28 @@ export default async function ProgrammePage({ params }: { params: Promise<{ slug
             <div className="summary">
               <div className="row-wrap" style={{ gap: 12, marginBottom: 14, flexWrap: "nowrap" }}>
                 <div className={`icon-tile accent-${p.accent}`}><Icon name={p.icon} /></div>
-                <h2 style={{ fontSize: "1.2rem", margin: 0 }}>{fiches.length ? "Le programme en bref" : "Agir avec nous"}</h2>
+                <h2 style={{ fontSize: "1.2rem", margin: 0 }}>{fiches.length ? t("Le programme en bref", "Programme at a glance") : t("Agir avec nous", "Get involved")}</h2>
               </div>
               {fiches.length ? (
                 <dl>
-                  <div><dt>Actions publiées</dt><dd>{fiches.length}</dd></div>
-                  {o.active ? <div><dt>En cours ou à venir</dt><dd>{o.active}</dd></div> : null}
-                  {zones.length ? <div><dt>{zones.length > 1 ? "Régions" : "Région"}</dt><dd>{zones.join(", ")}</dd></div> : null}
-                  {o.next ? <div><dt>Prochaine date</dt><dd>{scheduleLabel(o.next.schedule)}</dd></div> : null}
-                  {p.timeline ? <div><dt>Calendrier</dt><dd>{p.timeline}</dd></div> : null}
-                  {p.budget !== null ? <div><dt>Budget</dt><dd>{formatFCFA(p.budget)}</dd></div> : o.planned !== null ? <div><dt>Budget prévisionnel validé</dt><dd>{formatFCFA(o.planned)}</dd></div> : null}
+                  <div><dt>{t("Actions publiées", "Published actions")}</dt><dd>{fiches.length}</dd></div>
+                  {o.active ? <div><dt>{t("En cours ou à venir", "In progress or upcoming")}</dt><dd>{o.active}</dd></div> : null}
+                  {zones.length ? <div><dt>{zones.length > 1 ? t("Régions", "Regions") : t("Région", "Region")}</dt><dd>{zones.join(", ")}</dd></div> : null}
+                  {o.next ? <div><dt>{t("Prochaine date", "Next date")}</dt><dd>{scheduleLabel(o.next.schedule, locale)}</dd></div> : null}
+                  {p.timeline ? <div><dt>{t("Calendrier", "Timeline")}</dt><dd>{p.timeline}</dd></div> : null}
+                  {p.budget !== null ? <div><dt>{t("Budget", "Budget")}</dt><dd>{formatFCFA(p.budget, locale)}</dd></div> : o.planned !== null ? <div><dt>{t("Budget prévisionnel validé", "Validated planned budget")}</dt><dd>{formatFCFA(o.planned, locale)}</dd></div> : null}
                 </dl>
               ) : (
                 <p className="small">
-                  Vous souhaitez proposer une action, rejoindre l&apos;équipe ou soutenir ce programme ? Écrivez-nous ou appelez-nous.
+                  {t(
+                    "Vous souhaitez proposer une action, rejoindre l'équipe ou soutenir ce programme ? Écrivez-nous ou appelez-nous.",
+                    "Would you like to suggest an action, join the team or support this programme? Write to us or call us.",
+                  )}
                 </p>
               )}
               <div className="stack" style={{ gap: 8 }}>
-                <Link href={`/contact?type=general&sujet=${encodeURIComponent(`Programme ${p.shortTitle}`)}`} className="btn btn-outline btn-block"><Icon name="mail" />Nous contacter</Link>
-                <Link href={`/contact?type=benevolat&sujet=${encodeURIComponent(`Programme ${p.shortTitle}`)}`} className="btn btn-outline btn-block"><Icon name="handshake" />Devenir bénévole</Link>
+                <Link href={`/contact?type=general&sujet=${encodeURIComponent(`Programme ${p.shortTitle}`)}`} className="btn btn-outline btn-block"><Icon name="mail" />{t("Nous contacter", "Contact us")}</Link>
+                <Link href={`/contact?type=benevolat&sujet=${encodeURIComponent(`Programme ${p.shortTitle}`)}`} className="btn btn-outline btn-block"><Icon name="handshake" />{t("Devenir bénévole", "Become a volunteer")}</Link>
               </div>
             </div>
           </aside>
@@ -137,13 +144,13 @@ export default async function ProgrammePage({ params }: { params: Promise<{ slug
       {fiches.length > 0 ? (
         <section className="section section-warm" aria-labelledby="projets-programme">
           <div className="container">
-            <h2 id="projets-programme">Activités et campagnes de ce programme</h2>
+            <h2 id="projets-programme">{t("Activités et campagnes de ce programme", "Activities and campaigns in this programme")}</h2>
             <div className="grid grid-3 mt-3">
               {fiches.map((f) => <FicheCard key={f.id} fiche={f} />)}
             </div>
             <p className="mt-4 row-wrap">
-              <Link href={`/activites?domaine=${p.slug}`} className="btn btn-outline">Voir toutes les activités</Link>
-              <Link href="/faire-un-don" className="btn"><Icon name="heart" />Soutenir ce programme</Link>
+              <Link href={`/activites?domaine=${p.slug}`} className="btn btn-outline">{t("Voir toutes les activités", "See all activities")}</Link>
+              <Link href="/faire-un-don" className="btn"><Icon name="heart" />{t("Soutenir ce programme", "Support this programme")}</Link>
             </p>
           </div>
         </section>

@@ -11,6 +11,8 @@ export type SocialLink = { label: string; url: string };
 export type ImpactIndicator = {
   /** Libellé affiché, ex. « Élèves accompagnés » */
   label: string;
+  /** Libellé en anglais */
+  labelEn?: string;
   /** Valeur vérifiée (nombre). `null` = « Données à renseigner ». */
   value: number | null;
   /** Suffixe éventuel, ex. « + » ou « % » */
@@ -26,6 +28,13 @@ export const site = {
   country: "Sénégal",
   description:
     "La Fondation Horizon Solidaire agit au Sénégal pour l'éducation, la santé, l'aide humanitaire, la solidarité et le développement durable des communautés.",
+  /** Versions anglaises de la devise et de la présentation. */
+  en: {
+    motto: "Together, let's build a sustainable future",
+    country: "Senegal",
+    description:
+      "Fondation Horizon Solidaire works in Senegal for education, health, humanitarian aid, solidarity and the sustainable development of communities.",
+  },
 
   /** URL publique du site, utilisée pour le SEO et le sitemap. Surchargée par NEXT_PUBLIC_SITE_URL. */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
@@ -86,10 +95,10 @@ export const site = {
    */
   showImpactWhenEmpty: true,
   impact: [
-    { label: "Personnes accompagnées", value: null },
-    { label: "Projets menés", value: null },
-    { label: "Communes ou quartiers touchés", value: null },
-    { label: "Bénévoles mobilisés", value: null },
+    { label: "Personnes accompagnées", labelEn: "People supported", value: null },
+    { label: "Projets menés", labelEn: "Projects carried out", value: null },
+    { label: "Communes ou quartiers touchés", labelEn: "Towns or neighbourhoods reached", value: null },
+    { label: "Bénévoles mobilisés", labelEn: "Volunteers involved", value: null },
   ] as ImpactIndicator[],
 
   /**
@@ -101,12 +110,12 @@ export const site = {
 } as const;
 
 export const navigation = [
-  { href: "/", label: "Accueil" },
-  { href: "/qui-sommes-nous", label: "Qui sommes-nous ?" },
-  { href: "/programmes", label: "Nos programmes" },
-  { href: "/activites", label: "Activités" },
-  { href: "/transparence", label: "Transparence" },
-  { href: "/actualites", label: "Actualités" },
-  { href: "/galerie", label: "Galerie" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Accueil", en: "Home" },
+  { href: "/qui-sommes-nous", label: "Qui sommes-nous ?", en: "About us" },
+  { href: "/programmes", label: "Nos programmes", en: "Programmes" },
+  { href: "/activites", label: "Activités", en: "Activities" },
+  { href: "/transparence", label: "Transparence", en: "Transparency" },
+  { href: "/actualites", label: "Actualités", en: "News" },
+  { href: "/galerie", label: "Galerie", en: "Gallery" },
+  { href: "/contact", label: "Contact", en: "Contact" },
 ] as const;

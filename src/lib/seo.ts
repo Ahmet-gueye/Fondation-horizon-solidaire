@@ -7,11 +7,13 @@ export function pageMetadata({
   description,
   path,
   noIndex,
+  locale = "fr",
 }: {
   title: string;
   description: string;
   path: string;
   noIndex?: boolean;
+  locale?: "fr" | "en";
 }): Metadata {
   return {
     title,
@@ -22,7 +24,7 @@ export function pageMetadata({
       description,
       url: path,
       siteName: site.name,
-      locale: "fr_SN",
+      locale: locale === "en" ? "en_GB" : "fr_SN",
       type: "website",
       ...(site.shareImage ? { images: [{ url: site.shareImage, width: 1200, height: 630 }] } : {}),
     },

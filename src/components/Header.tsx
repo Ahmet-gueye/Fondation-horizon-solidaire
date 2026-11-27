@@ -4,17 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navigation, site } from "@/config/site";
-import { getDictionary, locales } from "@/i18n";
+import { locales, makeT, type Locale, type T } from "@/i18n";
 import { Icon } from "./Icon";
 import { Logo } from "./Logo";
-
-const t = getDictionary();
 
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function LanguageSwitcher() {
+function LanguageSwitcher({ locale, t }: { locale: Locale; t: T }) {
+  const pathname = usePathname() ?? "/";
   const ref = useRef<HTMLDetailsElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -38,21 +37,28 @@ function LanguageSwitcher() {
 
   return (
     <details className="lang" ref={ref}>
-      <summary aria-label={`${t.language} : Français`}>
+      <summary aria-label={`${t("Langue", "Language")} : ${locales.find((l) => l.code === locale)?.label}`}>
         <Icon name="globe" />
-        FR
+        {locales.find((l) => l.code === locale)?.short}
       </summary>
-      <ul className="lang-menu" aria-label={t.language}>
+      <ul className="lang-menu" aria-label={t("Langue", "Language")}>
         {locales.map((l) => (
           <li key={l.code}>
-            {l.enabled ? (
+            {l.code === locale ? (
               <span className="is-active" lang={l.code} aria-current="true">
                 {l.label} <Icon name="check" className="icon" />
               </span>
             ) : (
-              <span className="is-disabled" lang={l.code} aria-disabled="true">
-                {l.label} <small>{t.languageSoon}</small>
-              </span>
+              // Lien classique (pas de préchargement) : il enregistre le choix puis revient sur cette page.
+              <a
+                href={`/langue/${l.code}?retour=${encodeURIComponent(pathname)}`}
+                onClick={(e) => { e.currentTarget.href = `/langue/${l.code}?retour=${encodeURIComponent(pathname + window.location.search)}`; }}
+                lang={l.code}
+                hrefLang={l.code}
+                rel="nofollow"
+              >
+                {l.label}
+              </a>
             )}
           </li>
         ))}
@@ -61,7 +67,8 @@ function LanguageSwitcher() {
   );
 }
 
-export function Header() {
+export function Header({ locale }: { locale: Locale }) {
+  const t = makeT(locale);
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -95,20 +102,20 @@ export function Header() {
   return (
     <header className="site-header" data-scrolled={scrolled}>
       <div className="container header-inner">
-        <Link href="/" className="brand" aria-label={`${site.name}, retour à l'accueil`}>
+        <Link href="/" className="brand" aria-label={`${site.name}, ${t("retour à l'accueil", "back to home page")}`}>
           <Logo />
           <span className="brand-name">
             <strong>{site.name}</strong>
-            <small>{site.motto}</small>
+            <small>{locale === "en" ? site.en.motto : site.motto}</small>
           </span>
         </Link>
 
-        <nav className="main-nav" aria-label="Navigation principale">
+        <nav className="main-nav" aria-label={t("Navigation principale", "Main navigation")}>
           <ul>
             {navigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined}>
-                  {item.label}
+                  {locale === "en" ? item.en : item.label}
                 </Link>
               </li>
             ))}
@@ -116,10 +123,10 @@ export function Header() {
         </nav>
 
         <div className="header-actions">
-          <LanguageSwitcher />
+          <LanguageSwitcher locale={locale} t={t} />
           <Link href="/faire-un-don" className="btn btn-sun btn-sm header-donate">
             <Icon name="heart" />
-            {t.donate}
+            {t("Nous soutenir", "Support us")}
           </Link>
           <button
             ref={toggleRef}
@@ -130,31 +137,31 @@ export function Header() {
             onClick={() => setOpen((v) => !v)}
           >
             <Icon name={open ? "close" : "menu"} />
-            <span className="visually-hidden">{open ? t.closeMenu : t.menu}</span>
+            <span className="visually-hidden">{open ? t("Fermer le menu", "Close menu") : t("Menu", "Menu")}</span>
           </button>
         </div>
       </div>
 
       <div id="menu-mobile" className="mobile-panel" hidden={!open}>
-        <nav aria-label="Navigation mobile">
+        <nav aria-label={t("Navigation mobile", "Mobile navigation")}>
           <ul>
             {navigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined}>
-                  {item.label}
+                  {locale === "en" ? item.en : item.label}
                 </Link>
               </li>
             ))}
             <li>
               <Link href="/engagez-vous" aria-current={isActive(pathname, "/engagez-vous") ? "page" : undefined}>
-                Bénévolat et partenariats
+                {t("Bénévolat et partenariats", "Volunteering and partnerships")}
               </Link>
             </li>
           </ul>
         </nav>
         <Link href="/faire-un-don" className="btn btn-sun btn-block">
           <Icon name="heart" />
-          {t.donate}
+          {t("Nous soutenir", "Support us")}
         </Link>
       </div>
     </header>

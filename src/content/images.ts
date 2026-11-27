@@ -120,3 +120,24 @@ export const stock = {
 
 /** Grande photo de la page d'accueil. */
 export const heroImage = stock.marche;
+
+/** Textes alternatifs en anglais (même ordre que `stock`). */
+const altEn: Record<string, string> = {
+  "Femmes vendant fruits, légumes et céréales sur un marché au Sénégal": "Women selling fruit, vegetables and grain at a market in Senegal",
+  "Habitants d'un village sénégalais portant des bassines entre les cases": "Villagers in Senegal carrying basins between the huts",
+  "Travailleurs récoltant le sel au bord du lac Rose": "Workers harvesting salt on the shore of Lake Retba (the Pink Lake)",
+  "Hommes et femmes réunis lors d'une rencontre communautaire": "Men and women gathered at a community meeting",
+  "Femmes cultivant leur parcelle au milieu des palmiers": "Women farming their plot among palm trees",
+  "Une élève trace des lignes à la règle dans son cahier": "A pupil drawing lines with a ruler in her exercise book",
+  "Un formateur anime une séance devant une salle d'apprenants": "A trainer leading a session in front of a room of learners",
+  "Un soignant souriant tend son stéthoscope": "A smiling health worker holding out a stethoscope",
+  "Jeunes adultes célébrant avec des drapeaux du Sénégal": "Young adults celebrating with Senegalese flags",
+  "Pêcheurs ramenant leur pirogue sur la plage": "Fishermen bringing their pirogue up the beach",
+  "Plage animée au pied des maisons colorées": "Busy beach below colourful houses",
+  "Charrette tirée par un cheval dans une rue de Rufisque": "Horse-drawn cart in a street in Rufisque",
+};
+
+/** Traduit le texte alternatif d'une image d'illustration. */
+export function localizeImage<I extends { alt: string }>(img: I, locale: "fr" | "en"): I {
+  return locale === "en" && altEn[img.alt] ? { ...img, alt: altEn[img.alt] } : img;
+}

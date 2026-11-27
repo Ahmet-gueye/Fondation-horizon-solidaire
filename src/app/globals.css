@@ -231,7 +231,7 @@ a:hover { color: var(--green-900); text-decoration-thickness: 2px; }
   border-radius: 12px; box-shadow: var(--shadow); padding: 6px; min-width: 200px; z-index: 60; list-style: none; margin: 0;
 }
 .lang-menu li { margin: 0; }
-.lang-menu span { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: .95rem; }
+.lang-menu span, .lang-menu a { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: .95rem; }
 .lang-menu .is-active { background: var(--green-50); font-weight: 700; color: var(--green-900); }
 .lang-menu .is-disabled { color: var(--ink-500); }
 .lang-menu small { font-size: .75rem; }
@@ -650,3 +650,5 @@ fieldset[disabled] { opacity: .75; }
 .action-list a { font-weight: 700; }
 .prog-visual { display: grid; place-items: center; border-radius: var(--radius-lg); width: 100%; aspect-ratio: 16 / 9; }
 .prog-visual svg { width: 56px; height: 56px; opacity: .85; }
+.lang-menu a { color: var(--ink-900); text-decoration: none; }
+.lang-menu a:hover, .lang-menu a:focus-visible { background: var(--green-50); }

@@ -1,4 +1,5 @@
-import { stock, type StockImage } from "./images";
+import type { Locale } from "@/i18n";
+import { localizeImage, stock, type StockImage } from "./images";
 
 /**
  * Programmes de la fondation.
@@ -176,10 +177,69 @@ export const programmes: Programme[] = [
   },
 ];
 
-export function getPublicProgrammes() {
-  return programmes.filter((p) => p.confirmed);
+/** Traductions anglaises des textes de présentation des programmes. */
+const programmesEn: Record<string, Pick<Programme, "title" | "shortTitle" | "summary" | "objective" | "audiences">> = {
+  education: {
+    title: "Education and school success",
+    shortTitle: "Education",
+    summary: "Improving access to school, keeping pupils in class and providing good learning conditions.",
+    objective: "Enabling every child and young person to go to school in good conditions, whatever their family's income.",
+    audiences: ["Pupils", "Families", "Schools"],
+  },
+  sante: {
+    title: "Health and prevention",
+    shortTitle: "Health",
+    summary: "Bringing essential care closer to families and encouraging everyday preventive habits.",
+    objective: "Improving access to basic care and health information, working with existing health facilities.",
+    audiences: ["Families", "Pregnant women and young children", "Older people"],
+  },
+  "aide-humanitaire": {
+    title: "Humanitarian aid and emergency response",
+    shortTitle: "Emergencies",
+    summary: "Providing fast and dignified help to families hit by a crisis: floods, fires, the lean season.",
+    objective: "Meeting the vital needs of households in emergency situations, in coordination with the authorities and local actors.",
+    audiences: ["Affected households", "Displaced people"],
+  },
+  solidarite: {
+    title: "Community solidarity and protection of vulnerable people",
+    shortTitle: "Solidarity",
+    summary: "Strengthening local mutual support and helping people who are isolated or in a fragile situation.",
+    objective: "Protecting and supporting vulnerable people by building on the bonds of solidarity that make communities strong.",
+    audiences: ["People with disabilities", "Orphans and vulnerable children", "Isolated older people"],
+  },
+  autonomisation: {
+    title: "Economic empowerment of women and young people",
+    shortTitle: "Empowerment",
+    summary: "Helping women and young people towards a stable income: training, mentoring, small equipment.",
+    objective: "Giving women and young people the means to start or grow an income-generating activity.",
+    audiences: ["Women", "Young people", "Groups and cooperatives"],
+  },
+  "developpement-local": {
+    title: "Local development and sustainable projects",
+    shortTitle: "Development",
+    summary: "Supporting initiatives led by communities themselves, designed to last and to respect the environment.",
+    objective: "Contributing to useful and lasting local projects, designed and monitored together with residents.",
+    audiences: ["Local communities", "Neighbourhood associations", "Local authorities"],
+  },
+  "eau-hygiene-assainissement": {
+    title: "Access to water, hygiene and sanitation",
+    shortTitle: "Water and hygiene",
+    summary: "Improving access to safe water and suitable hygiene facilities.",
+    objective: "Lastingly improving access to drinking water and sanitation for families and schools.",
+    audiences: ["Families", "Schools", "Health facilities"],
+  },
+};
+
+function localize(p: Programme, locale: Locale): Programme {
+  if (locale !== "en") return p;
+  const en = programmesEn[p.slug];
+  return { ...p, ...(en ?? {}), cover: p.cover ? localizeImage(p.cover, locale) : null };
 }
 
-export function getProgramme(slug: string) {
-  return getPublicProgrammes().find((p) => p.slug === slug);
+export function getPublicProgrammes(locale: Locale = "fr") {
+  return programmes.filter((p) => p.confirmed).map((p) => localize(p, locale));
+}
+
+export function getProgramme(slug: string, locale: Locale = "fr") {
+  return getPublicProgrammes(locale).find((p) => p.slug === slug);
 }

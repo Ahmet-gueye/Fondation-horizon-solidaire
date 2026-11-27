@@ -1,25 +1,35 @@
 /**
- * Préparation multilingue.
+ * Langues du site public : français (langue principale) et anglais.
  *
- * Le site est publié en français. Les langues `wo` (wolof) et `en` (anglais)
- * sont déclarées mais désactivées : elles apparaissent dans le sélecteur comme
- * « en préparation ». Pour activer une langue :
- *   1. traduire `fr.ts` dans `wo.ts` / `en.ts` (traduction humaine relue, jamais automatique) ;
- *   2. passer `enabled: true` ci-dessous ;
- *   3. ajouter le routage par préfixe (`/wo/...`) — voir le README.
+ * La langue choisie par le visiteur est mémorisée dans le cookie `fhs_lang`
+ * (aucune donnée personnelle, aucun suivi). Les adresses des pages restent les mêmes.
+ * L'espace d'administration reste en français.
+ *
+ * Les contenus saisis dans l'administration (fiches d'activités) sont publiés
+ * dans la langue où ils ont été rédigés.
  */
-import { fr } from "./fr";
+export type Locale = "fr" | "en";
 
-export const locales = [
-  { code: "fr", label: "Français", enabled: true },
-  { code: "wo", label: "Wolof", enabled: false },
-  { code: "en", label: "English", enabled: false },
-] as const;
+export const locales: { code: Locale; label: string; short: string }[] = [
+  { code: "fr", label: "Français", short: "FR" },
+  { code: "en", label: "English", short: "EN" },
+];
 
-export type Dictionary = typeof fr;
+export const defaultLocale: Locale = "fr";
+export const LOCALE_COOKIE = "fhs_lang";
 
-export const defaultLocale = "fr";
+export function isLocale(v: unknown): v is Locale {
+  return v === "fr" || v === "en";
+}
 
-export function getDictionary(): Dictionary {
-  return fr;
+/** Fonction de traduction : t("Texte français", "English text"). */
+export type T = (fr: string, en: string) => string;
+export function makeT(locale: Locale): T {
+  return (fr, en) => (locale === "en" ? en : fr);
+}
+
+/** Texte bilingue stocké dans les fichiers de contenu. */
+export type Bi = { fr: string; en: string };
+export function pick(locale: Locale, v: Bi | string): string {
+  return typeof v === "string" ? v : v[locale];
 }

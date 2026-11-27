@@ -10,6 +10,7 @@ export const ficheTypes = {
   campagne: "Campagne",
 } as const;
 export type FicheType = keyof typeof ficheTypes;
+export const ficheTypesEn: Record<FicheType, string> = { activite: "Activity", evenement: "Event", projet: "Project", campagne: "Campaign" };
 
 export const ficheStatuses = {
   brouillon: "Brouillon",
@@ -19,6 +20,7 @@ export const ficheStatuses = {
   archive: "Archivé",
 } as const;
 export type FicheStatus = keyof typeof ficheStatuses;
+export const ficheStatusesEn: Record<FicheStatus, string> = { brouillon: "Draft", planifie: "Planned", en_cours: "In progress", termine: "Completed", archive: "Archived" };
 /** Statuts qu'on choisit dans le formulaire (l'archivage passe par une action dédiée). */
 export const editableStatuses: FicheStatus[] = ["brouillon", "planifie", "en_cours", "termine"];
 /** Statuts compatibles avec une publication. */
@@ -32,6 +34,7 @@ export const ctaKinds = {
   soutenir: "Soutenir la campagne",
 } as const;
 export type CtaKind = keyof typeof ctaKinds;
+export const ctaKindsEn: Record<CtaKind, string> = { aucun: "No button", participer: "Take part", benevole: "Become a volunteer", en_savoir_plus: "Find out more", soutenir: "Support the campaign" };
 
 /** Les 14 régions administratives du Sénégal. */
 export const senegalRegions = [
@@ -207,6 +210,6 @@ export function ctaHref(f: Pick<FicheData, "cta" | "title">) {
   }
 }
 
-export function ctaLabel(f: Pick<FicheData, "cta">) {
-  return f.cta.label.trim() || ctaKinds[f.cta.kind];
+export function ctaLabel(f: Pick<FicheData, "cta">, locale: "fr" | "en" = "fr") {
+  return f.cta.label.trim() || (locale === "en" ? ctaKindsEn : ctaKinds)[f.cta.kind];
 }

@@ -1,19 +1,34 @@
 import Link from "next/link";
 import { PageHero } from "@/components/ui";
-import { faq } from "@/content/faq";
+import { getFaq } from "@/content/faq";
+import { i18n } from "@/i18n/server";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata = pageMetadata({ title: "Questions fréquentes", description: "Réponses aux questions fréquentes sur les dons, la transparence et l'engagement auprès de la Fondation Horizon Solidaire.", path: "/faq" });
+export async function generateMetadata() {
+  const { locale, t } = await i18n();
+  return pageMetadata({
+    title: t("Questions fréquentes", "Frequently asked questions"),
+    description: t(
+      "Réponses aux questions fréquentes sur les dons, la transparence et l'engagement auprès de la Fondation Horizon Solidaire.",
+      "Answers to frequently asked questions about donations, transparency and getting involved with Fondation Horizon Solidaire.",
+    ),
+    path: "/faq",
+    locale,
+  });
+}
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const { locale, t } = await i18n();
+  const faq = getFaq(locale);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    inLanguage: locale,
     mainEntity: faq.map((q) => ({ "@type": "Question", name: q.question, acceptedAnswer: { "@type": "Answer", text: q.answer } })),
   };
   return (
     <>
-      <PageHero title="Questions fréquentes" eyebrow="FAQ" crumbs={[{ label: "Questions fréquentes" }]} />
+      <PageHero title={t("Questions fréquentes", "Frequently asked questions")} eyebrow="FAQ" crumbs={[{ label: t("Questions fréquentes", "FAQ") }]} />
       <section className="section">
         <div className="container container-narrow">
           <div className="faq">
@@ -24,7 +39,9 @@ export default function FaqPage() {
               </details>
             ))}
           </div>
-          <p className="mt-4">Vous ne trouvez pas votre réponse ? <Link href="/contact">Posez-nous votre question</Link>.</p>
+          <p className="mt-4">
+            {t("Vous ne trouvez pas votre réponse ?", "Can't find your answer?")} <Link href="/contact">{t("Posez-nous votre question", "Ask us your question")}</Link>.
+          </p>
         </div>
       </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />

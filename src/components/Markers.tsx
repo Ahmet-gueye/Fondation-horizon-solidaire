@@ -1,10 +1,7 @@
-import { getDictionary } from "@/i18n";
 import { Icon } from "./Icon";
 
-const t = getDictionary();
-
 /** Mention visible pour toute information que la fondation doit encore fournir. */
-export function ToComplete({ label = t.toComplete, block = false }: { label?: string; block?: boolean }) {
+export function ToComplete({ label = "À compléter par la fondation", block = false }: { label?: string; block?: boolean }) {
   return (
     <span className={`to-complete${block ? " to-complete-block" : ""}`}>
       <Icon name="info" />
@@ -13,7 +10,7 @@ export function ToComplete({ label = t.toComplete, block = false }: { label?: st
   );
 }
 
-export function ExampleBadge({ label = t.example }: { label?: string }) {
+export function ExampleBadge({ label = "Exemple à remplacer" }: { label?: string }) {
   return <span className="badge badge-example">{label}</span>;
 }
 

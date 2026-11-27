@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();
   return (
-    <div className="admin">
+    <div className="admin" lang="fr">
       <a href="#admin-contenu" className="skip-link">Aller au contenu</a>
       <header className="admin-bar">
         <div className="admin-bar-inner">
