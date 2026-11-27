@@ -15,7 +15,7 @@ export default function ProgrammesPage() {
       <PageHero
         title="Nos programmes"
         eyebrow="Domaines d'action"
-        lead="Nos programmes regroupent des projets concrets. Pour chacun, nous publions l'objectif, les publics concernés, les zones d'intervention, le budget et les résultats vérifiés."
+        lead="Nos programmes regroupent des actions concrètes. Pour chacune, nous publions les dates, les lieux, les photos et, une fois validés, les budgets."
         crumbs={[{ label: "Nos programmes" }]}
       />
       <section className="section">

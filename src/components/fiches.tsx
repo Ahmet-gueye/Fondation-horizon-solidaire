@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPublicProgrammes } from "@/content/programmes";
+import { getPublicProgrammes, type Programme } from "@/content/programmes";
 import { formatDate, formatFCFA, percent } from "@/lib/format";
 import {
   ctaHref,
@@ -14,10 +14,27 @@ import {
   type Schedule,
 } from "@/lib/fiches/model";
 import { Icon } from "./Icon";
-import { MediaSlot } from "./Markers";
+import { Picture } from "./Picture";
 
-function domainLabel(slug: string) {
-  return getPublicProgrammes().find((p) => p.slug === slug)?.shortTitle ?? null;
+function domainProgramme(slug: string) {
+  return getPublicProgrammes().find((p) => p.slug === slug) ?? null;
+}
+
+/** Visuel de repli aux couleurs du programme (quand il n'a pas d'illustration). */
+export function ProgrammeVisual({ programme, ratio = "16 / 9" }: { programme: Pick<Programme, "accent" | "icon" | "shortTitle"> | null; ratio?: string }) {
+  return (
+    <div className={`prog-visual accent-${programme?.accent ?? "green"}`} style={{ aspectRatio: ratio }} role="img" aria-label={programme ? `Programme ${programme.shortTitle}` : "Fondation Horizon Solidaire"}>
+      <Icon name={programme?.icon ?? "handshake"} />
+    </div>
+  );
+}
+
+/** Image de la fiche, ou à défaut l'illustration de son programme (signalée comme telle). */
+function FicheVisual({ fiche, ratio, sizes, eager, caption }: { fiche: Fiche; ratio?: string; sizes?: string; eager?: boolean; caption?: boolean }) {
+  if (fiche.mainImage) return <FicheImage image={fiche.mainImage} ratio={ratio} caption={caption} sizes={sizes} eager={eager} />;
+  const prog = domainProgramme(fiche.domain);
+  if (prog?.cover) return <Picture image={{ ...prog.cover, isIllustration: true }} ratio={ratio ?? "16 / 9"} caption={caption} eager={eager} />;
+  return <ProgrammeVisual programme={prog} ratio={ratio ?? "16 / 9"} />;
 }
 
 /** Image importée par l'administration, servie en deux tailles (800 et 1600 px). */
@@ -61,11 +78,11 @@ export function TimingBadge({ fiche }: { fiche: Fiche }) {
 
 export function FicheCard({ fiche }: { fiche: Fiche }) {
   const place = placeLabel(fiche.zone);
-  const domain = domainLabel(fiche.domain);
+  const domain = domainProgramme(fiche.domain)?.shortTitle ?? null;
   return (
     <article className="card card-link reveal">
       <div className="card-media">
-        {fiche.mainImage ? <FicheImage image={fiche.mainImage} ratio="16 / 9" caption={false} sizes="(max-width: 760px) 100vw, 400px" /> : <MediaSlot label="Pas d'image pour cette fiche" ratio="16 / 9" />}
+        <FicheVisual fiche={fiche} ratio="16 / 9" caption={false} sizes="(max-width: 760px) 100vw, 400px" />
       </div>
       <div className="row-wrap">
         <span className="badge badge-teal">{ficheTypes[fiche.type]}</span>
@@ -73,7 +90,7 @@ export function FicheCard({ fiche }: { fiche: Fiche }) {
         {domain ? <span className="badge">{domain}</span> : null}
       </div>
       <h3><Link href={`/activites/${fiche.slug}`}>{fiche.title}</Link></h3>
-      <p className="meta"><Icon name="calendar" />{scheduleLabel(fiche.schedule)}</p>
+      {fiche.schedule.kind !== "a_definir" ? <p className="meta"><Icon name="calendar" />{scheduleLabel(fiche.schedule)}</p> : null}
       {place ? <p className="meta"><Icon name="pin" />{place}</p> : null}
       <p>{fiche.summary}</p>
     </article>
@@ -82,7 +99,7 @@ export function FicheCard({ fiche }: { fiche: Fiche }) {
 
 function BudgetBlock({ fiche }: { fiche: Fiche }) {
   const b = publishedBudget(fiche.budget);
-  if (!b) return <p className="small muted mb-0">Les informations budgétaires seront publiées après validation par la fondation.</p>;
+  if (!b) return null;
   const pct = b.planned && b.collected !== null ? percent(b.collected, b.planned) : null;
   return (
     <div className="stack" style={{ gap: 10 }}>
@@ -109,6 +126,7 @@ export function FicheDetail({ fiche }: { fiche: Fiche }) {
   const href = ctaHref(fiche);
   const paragraphs = fiche.description.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   const t = timing(fiche);
+  const prog = domainProgramme(fiche.domain);
   return (
     <section className="section">
       <div className="container split" style={{ alignItems: "start" }}>
@@ -119,16 +137,20 @@ export function FicheDetail({ fiche }: { fiche: Fiche }) {
               <p className="mb-0">{fiche.status === "termine" ? "Cette action est terminée." : "Les dates de cette action sont passées."} {scheduleLabel(fiche.schedule)}.</p>
             </div>
           ) : null}
-          {fiche.mainImage ? <div className="rounded-media"><FicheImage image={fiche.mainImage} eager /></div> : null}
-          <h2>Description</h2>
-          {paragraphs.length ? paragraphs.map((p, i) => <p key={i} style={{ whiteSpace: "pre-line" }}>{p}</p>) : <p className="muted">Description à venir.</p>}
+          <div className="rounded-media"><FicheVisual fiche={fiche} eager /></div>
+          {paragraphs.length ? (
+            <>
+              <h2>Description</h2>
+              {paragraphs.map((p, i) => <p key={i} style={{ whiteSpace: "pre-line" }}>{p}</p>)}
+            </>
+          ) : null}
           {fiche.steps.length ? (
             <>
               <h2>Calendrier</h2>
               <ol className="timeline">
                 {fiche.steps.map((s, i) => (
                   <li key={i}>
-                    <p className="timeline-when">{s.date ? formatDate(s.date) : "Date à préciser"}{s.time ? `, ${s.time.replace(":", " h ")}` : ""}</p>
+                    {s.date ? <p className="timeline-when">{formatDate(s.date)}{s.time ? `, ${s.time.replace(":", " h ")}` : ""}</p> : null}
                     <p className="timeline-what"><strong>{s.title}</strong></p>
                     {s.details ? <p className="small muted mb-0">{s.details}</p> : null}
                   </li>
@@ -162,8 +184,9 @@ export function FicheDetail({ fiche }: { fiche: Fiche }) {
             <dl>
               <div><dt>Type</dt><dd>{ficheTypes[fiche.type]}</dd></div>
               <div><dt>Statut</dt><dd>{t === "passe" ? (fiche.status === "termine" ? "Terminé" : "Date passée") : ficheStatuses[fiche.status]}</dd></div>
-              <div><dt>Quand</dt><dd>{scheduleLabel(fiche.schedule)}</dd></div>
-              <div><dt>Où</dt><dd>{place || "Lieu à préciser"}</dd></div>
+              {fiche.schedule.kind !== "a_definir" ? <div><dt>Quand</dt><dd>{scheduleLabel(fiche.schedule)}</dd></div> : null}
+              {place ? <div><dt>Où</dt><dd>{place}</dd></div> : null}
+              {prog ? <div><dt>Programme</dt><dd><Link href={`/programmes/${prog.slug}`}>{prog.shortTitle}</Link></dd></div> : null}
             </dl>
             {href ? (
               <Link href={href} className="btn btn-sun btn-block">{ctaLabel(fiche)}</Link>
@@ -171,10 +194,12 @@ export function FicheDetail({ fiche }: { fiche: Fiche }) {
               <Link href={`/contact?type=general&sujet=${encodeURIComponent(fiche.title.slice(0, 100))}`} className="btn btn-outline btn-block">Nous contacter</Link>
             )}
           </div>
-          <div className="summary">
-            <h2 style={{ fontSize: "1.1rem" }}>Budget</h2>
-            <BudgetBlock fiche={fiche} />
-          </div>
+          {publishedBudget(fiche.budget) ? (
+            <div className="summary">
+              <h2 style={{ fontSize: "1.1rem" }}>Budget</h2>
+              <BudgetBlock fiche={fiche} />
+            </div>
+          ) : null}
           <p className="small muted">
             {fiche.publishedAt ? <>Publié le {formatDate(fiche.publishedAt)}. </> : null}Mis à jour le {formatDate(fiche.updatedAt)}.
           </p>

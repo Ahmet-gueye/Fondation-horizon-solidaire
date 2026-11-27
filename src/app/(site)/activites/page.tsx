@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FicheCard } from "@/components/fiches";
 import { EmptyState } from "@/components/Markers";
-import { DonateBand, PageHero } from "@/components/ui";
+import { DonateBand, PageHero, ProgrammeCard } from "@/components/ui";
 import { getPublicProgrammes } from "@/content/programmes";
 import { listPublicFiches } from "@/lib/fiches/repo";
 import { ficheTypes, publishableStatuses, ficheStatuses, timing, type FicheType } from "@/lib/fiches/model";
@@ -96,10 +96,17 @@ export default async function ActivitiesPage({ searchParams }: { searchParams: P
                 {fiches.map((f) => <FicheCard key={f.id} fiche={f} />)}
               </div>
             </>
-          ) : (
-            <EmptyState icon="calendar" title={filtered ? "Aucun résultat pour ces filtres" : "Aucune activité publiée pour le moment"}>
-              <p>{filtered ? "Essayez d'élargir votre recherche." : "Les activités, événements et campagnes de la fondation apparaîtront ici dès leur publication."}</p>
+          ) : filtered ? (
+            <EmptyState icon="calendar" title="Aucun résultat pour ces filtres">
+              <p>Essayez d&apos;élargir votre recherche.</p>
             </EmptyState>
+          ) : (
+            <>
+              <p className="lead">Découvrez nos domaines d&apos;action : chaque activité, événement ou campagne de la fondation y sera rattaché.</p>
+              <div className="grid grid-3 mt-3">
+                {programmes.map((p) => <ProgrammeCard key={p.slug} programme={p} />)}
+              </div>
+            </>
           )}
           <p className="small muted mt-4">Statuts possibles : {publishableStatuses.map((s) => ficheStatuses[s].toLowerCase()).join(", ")}.</p>
         </div>

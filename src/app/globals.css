@@ -639,3 +639,14 @@ fieldset[disabled] { opacity: .75; }
 .btn-danger { --btn-fg: var(--red-600); --btn-border: var(--red-600); }
 .btn-danger:hover { background: var(--red-600); color: #fff; }
 .admin-preview .page-hero { margin-top: 16px; border-radius: var(--radius); }
+
+/* Programme : publics, liste d'actions, visuel de remplacement */
+.chip-list { list-style: none; padding: 0; margin: 0 0 1.2em; display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-list li { display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--green-100); color: var(--green-800); font-weight: 600; font-size: .95rem; }
+.chip-list svg { width: 18px; height: 18px; }
+.action-list { list-style: none; padding: 0; }
+.action-list li { display: grid; gap: 2px; padding: 10px 0; border-bottom: 1px dashed var(--line); margin: 0; }
+.action-list li:last-child { border-bottom: 0; }
+.action-list a { font-weight: 700; }
+.prog-visual { display: grid; place-items: center; border-radius: var(--radius-lg); width: 100%; aspect-ratio: 16 / 9; }
+.prog-visual svg { width: 56px; height: 56px; opacity: .85; }
