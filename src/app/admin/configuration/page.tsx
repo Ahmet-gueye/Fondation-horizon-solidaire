@@ -2,7 +2,8 @@ import Link from "next/link";
 import { databaseKind } from "@/lib/db/docstore";
 import { filesKind } from "@/lib/db/files";
 import { adminReady } from "@/lib/auth/session";
-import { getAuthSecret, getSetupToken } from "@/lib/env";
+import { getAuthSecret, getSetupToken, getSiteUrl } from "@/lib/env";
+import { paymentMode } from "@/lib/payments/dons";
 
 export const metadata = { title: "Configuration" };
 
@@ -40,6 +41,17 @@ export default function ConfigPage() {
           detail={files === "vercel-blob" ? "Vercel Blob." : files === "fichiers" ? "Dossier local (développement uniquement)." : "Magasin Vercel Blob non relié (BLOB_READ_WRITE_TOKEN ou BLOB_STORE_ID manquant) : obligatoire sur Vercel pour importer des images."}
         />
         <Row ok={Boolean(getSetupToken())} label="ADMIN_SETUP_TOKEN" detail="Code utilisé une seule fois pour créer le premier administrateur. Peut être retiré ensuite." />
+      </ul>
+      <h2>Dons en ligne (PayTech)</h2>
+      <ul className="config-list">
+        <Row ok={Boolean(process.env.PAYTECH_API_KEY?.trim())} label="PAYTECH_API_KEY" detail="Clé API PayTech (tableau de bord PayTech)." />
+        <Row ok={Boolean(process.env.PAYTECH_API_SECRET?.trim())} label="PAYTECH_API_SECRET" detail="Clé secrète PayTech." />
+        <Row
+          ok={paymentMode() !== "off"}
+          label="PAYTECH_ENV"
+          detail={paymentMode() === "prod" ? "prod : dons ouverts au public." : paymentMode() === "test" ? "test : formulaire visible seulement par les personnes connectées." : "Absent ou incomplet : écrire test (essais) ou prod (compte activé par PayTech)."}
+        />
+        <Row ok={getSiteUrl().startsWith("https://")} label="Adresse du site" detail={`${getSiteUrl()} : doit commencer par https:// pour recevoir les confirmations PayTech.`} />
       </ul>
       <p className="small muted">La marche à suivre est détaillée dans le fichier README du projet, section « Espace d&apos;administration ».</p>
       {adminReady() ? <Link className="btn" href="/admin">Accéder à l&apos;administration</Link> : null}

@@ -4,7 +4,7 @@
  * D'après la documentation officielle (https://docs.intech.sn/doc_paytech.php, section IPN) :
  *  - Méthode recommandée (HMAC-SHA256) :
  *      hmac_compute = HMAC_SHA256(clé = API_SECRET, message = `${montant}|${ref_command}|${API_KEY}`)
- *    où `montant` = final_item_price (à défaut item_price), digest hexadécimal.
+ *    où `montant` = item_price ou final_item_price (la documentation varie), digest hexadécimal.
  *  - Méthode classique : sha256(API_KEY) === api_key_sha256 ET sha256(API_SECRET) === api_secret_sha256.
  *
  * Module pur (sans dépendance Next.js) pour pouvoir être testé avec `npm test`.
@@ -34,14 +34,14 @@ export function verifyIpn(payload: IpnPayload, apiKey: string, apiSecret: string
   if (!apiKey || !apiSecret) return { valid: false, reason: "identifiants-absents" };
 
   const ref = payload.ref_command ?? "";
-  const amount = payload.final_item_price || payload.item_price || "";
+  // La documentation écrit `item_price` dans la formule, mais ses exemples de code utilisent
+  // `final_item_price` (prix après promotion) : on accepte l'un ou l'autre.
+  const amounts = [payload.final_item_price, payload.item_price].filter((v): v is string => Boolean(v));
 
   if (payload.hmac_compute) {
-    if (!ref || !amount) return { valid: false, reason: "champs-manquants" };
-    const expected = computeIpnHmac(amount, ref, apiKey, apiSecret);
-    return safeEqualHex(expected, payload.hmac_compute)
-      ? { valid: true, method: "hmac" }
-      : { valid: false, reason: "hmac-invalide" };
+    if (!ref || amounts.length === 0) return { valid: false, reason: "champs-manquants" };
+    const ok = amounts.some((amount) => safeEqualHex(computeIpnHmac(amount, ref, apiKey, apiSecret), payload.hmac_compute!));
+    return ok ? { valid: true, method: "hmac" } : { valid: false, reason: "hmac-invalide" };
   }
 
   if (payload.api_key_sha256 && payload.api_secret_sha256) {

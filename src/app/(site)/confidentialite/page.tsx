@@ -31,8 +31,8 @@ export default async function PrivacyPage() {
             <li>
               <strong>{t("Dons :", "Donations:")}</strong>{" "}
               {t(
-                "le don en ligne n'est pas encore ouvert. Le site ne collecte aucune donnée de carte bancaire ni code Mobile Money, et n'en collectera jamais : le jour où le paiement en ligne ouvrira, ces informations seront saisies uniquement sur la page sécurisée de PayTech.",
-                "online giving is not open yet. The website does not collect any bank card data or Mobile Money code, and never will: when online payment opens, this information will only be entered on PayTech's secure page.",
+                "montant, devise, affectation, référence du don, moyen de paiement indiqué par PayTech et, seulement si vous les donnez, votre nom et votre e-mail. Le site ne collecte jamais de donnée de carte bancaire ni de code Mobile Money : ces informations sont saisies uniquement sur la page sécurisée de PayTech.",
+                "amount, currency, allocation, donation reference, payment method reported by PayTech and, only if you provide them, your name and email. The website never collects bank card data or Mobile Money codes: this information is only entered on PayTech's secure page.",
               )}
             </li>
             <li>
@@ -57,8 +57,8 @@ export default async function PrivacyPage() {
           <h2>{t("Destinataires", "Recipients")}</h2>
           <p>
             {t(
-              "Les personnes habilitées de la fondation et, techniquement, ses hébergeurs (site, base de données, stockage des fichiers). Le prestataire de paiement PayTech le sera aussi lorsque le don en ligne ouvrira.",
-              "Authorised people at the foundation and, technically, its hosting providers (website, database, file storage). The payment provider PayTech will also be a recipient once online giving opens.",
+              "Les personnes habilitées de la fondation, le prestataire de paiement PayTech pour les dons en ligne et, techniquement, les hébergeurs du site (site, base de données, stockage des fichiers).",
+              "Authorised people at the foundation, the payment provider PayTech for online donations and, technically, the website's hosting providers (website, database, file storage).",
             )}
           </p>
           <h2>{t("Durée de conservation", "Retention period")}</h2>

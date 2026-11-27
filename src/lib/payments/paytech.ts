@@ -1,10 +1,7 @@
 import "server-only";
 
 /**
- * Client PayTech — PRÉPARÉ, NON BRANCHÉ.
- *
- * Aucun écran ni route du site n'appelle ce module tant que le compte PayTech de la
- * fondation n'est pas activé et testé (voir README, « Activer PayTech plus tard »).
+ * Client PayTech (appelé par la route serveur /api/dons).
  *
  * Référence : https://docs.intech.sn/doc_paytech.php
  *   POST {apiBase}/payment/request-payment
@@ -75,11 +72,12 @@ export async function requestPayment(cfg: PaytechConfig, req: PaymentRequest) {
     cache: "no-store",
   });
   const data = (await res.json().catch(() => null)) as
-    | { success?: number | string; token?: string; redirect_url?: string; redirectUrl?: string }
+    | { success?: number | string; token?: string; redirect_url?: string; redirectUrl?: string; message?: string }
     | null;
   const redirect = data?.redirect_url ?? data?.redirectUrl;
   if (!res.ok || !data || Number(data.success) !== 1 || !data.token || !redirect) {
-    throw new PaytechError(`Réponse PayTech invalide (HTTP ${res.status})`);
+    const detail = typeof data?.message === "string" ? ` : ${data.message.slice(0, 200)}` : "";
+    throw new PaytechError(`Réponse PayTech invalide (HTTP ${res.status})${detail}`);
   }
   const url = new URL(redirect);
   if (url.protocol !== "https:" || !(url.hostname === "paytech.sn" || url.hostname.endsWith(".paytech.sn"))) {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/ui";
 import { getFaq } from "@/content/faq";
 import { i18n } from "@/i18n/server";
+import { paymentMode } from "@/lib/payments/dons";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -19,7 +20,7 @@ export async function generateMetadata() {
 
 export default async function FaqPage() {
   const { locale, t } = await i18n();
-  const faq = getFaq(locale);
+  const faq = getFaq(locale, paymentMode() === "prod");
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

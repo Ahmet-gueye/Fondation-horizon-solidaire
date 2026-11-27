@@ -69,6 +69,14 @@ export const faqEn: { question: string; answer: string }[] = [
   },
 ];
 
-export function getFaq(locale: "fr" | "en") {
-  return locale === "en" ? faqEn : faq;
+/** Réponse à « Puis-je faire un don en ligne ? » une fois le paiement PayTech ouvert au public. */
+const onlineOpen = {
+  fr: "Oui, depuis la page « Nous soutenir ». Le paiement se fait sur la page sécurisée de la plateforme PayTech. Le site de la fondation ne demande ni ne conserve jamais vos coordonnées bancaires, votre numéro de carte ou vos codes Mobile Money.",
+  en: "Yes, from the “Support us” page. Payment is made on the secure page of the PayTech platform. The foundation's website never asks for or stores your bank details, card number or Mobile Money codes.",
+};
+
+export function getFaq(locale: "fr" | "en", donationsOpen = false) {
+  const list = (locale === "en" ? faqEn : faq).map((q) => ({ ...q }));
+  if (donationsOpen) list[1].answer = onlineOpen[locale];
+  return list;
 }

@@ -29,6 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               {can(user.role, "comptes.gerer") ? <Link href="/admin/comptes">Comptes</Link> : null}
               {can(user.role, "historique.voir") ? <Link href="/admin/historique">Historique</Link> : null}
               {can(user.role, "messages.voir") ? <Link href="/admin/messages">Messages</Link> : null}
+              {can(user.role, "dons.voir") ? <Link href="/admin/dons">Dons</Link> : null}
               <Link href="/admin/compte">Mon compte</Link>
               <Link href="/" target="_blank">Voir le site</Link>
               <span className="admin-who">{user.name} · {roleLabels[user.role]}</span>

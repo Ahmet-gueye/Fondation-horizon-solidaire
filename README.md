@@ -4,9 +4,8 @@ Site francophone de la Fondation Horizon Solidaire (Sénégal) : présentation d
 activités et campagnes, transparence, actualités, galerie, bénévolat, partenariats, et un **espace
 d'administration** pour publier les activités, événements, projets et campagnes sans toucher au code.
 
-> **Dons en ligne : pas encore ouverts.** Le compte PayTech de la fondation n'est pas activé. Le site n'affiche
-> aucun formulaire de paiement, aucun bouton « Payer » et n'encaisse rien. La page « Nous soutenir » invite à
-> contacter la fondation. L'activation future est décrite plus bas (« Activer PayTech plus tard »).
+> **Dons en ligne : PayTech intégré.** Le paiement s'active avec les variables `PAYTECH_*` (voir « Dons en ligne
+> avec PayTech »). En mode `test`, seul l'administrateur connecté voit le formulaire ; en `prod`, tout le monde.
 
 > **Important.** Le site n'invente aucune donnée réelle. Tout ce qui manque s'affiche « À compléter par
 > la fondation » ou reste masqué. La liste complète des informations à fournir se trouve dans
@@ -66,7 +65,7 @@ src/
     auth/                 Mots de passe, sessions, rôles, comptes
     db/                   Base de données (PostgreSQL ou fichiers locaux) et stockage des fichiers
     fiches/               Modèle, validation, enregistrement et images des fiches
-    payments/             PayTech, préparé mais NON branché
+    payments/             PayTech : demande de paiement, vérification des notifications, dons
 public/images/            Logo et images d'illustration
 data/                     Données locales de développement (non versionné)
 tests/                    Tests automatisés
@@ -250,31 +249,39 @@ fichiers et des requêtes non autorisées) avec une vraie base PostgreSQL 16 et 
 - Devises prévues (`donationConfig.plannedCurrencies`) : **XOF/FCFA, EUR, USD, CAD, GBP, MAD**, codes acceptés
   par PayTech dans le paramètre `currency`. Aucune n'est présentée comme disponible.
 
-### Activer PayTech plus tard
+### Dons en ligne avec PayTech
 
-Documentation de référence : <https://docs.intech.sn/doc_paytech.php>.
+Documentation de référence : <https://docs.intech.sn/doc_paytech.php>. Le code est en place ; le don en ligne
+s'active **uniquement** par les variables d'environnement, à mettre dans Vercel > Settings > Environments >
+Production > Environment Variables (jamais dans le code, jamais dans une variable `NEXT_PUBLIC_*`) :
 
-1. **Compte** : créer le compte sur paytech.sn et demander son activation (contact@paytech.sn, objet
-   « Activation Compte PayTech », pièces demandées : notamment NINEA et documents de la fondation).
-2. **Confirmer par écrit avec PayTech** : les moyens de paiement ouverts au compte (Orange Money, Wave, Free
-   Money, carte…), les **devises** réellement acceptées pour ce compte parmi XOF, EUR, USD, CAD, GBP, MAD, les
-   frais, et l'existence ou non du don récurrent (non décrit dans la documentation consultée).
-3. **Clés** : récupérer la clé API et la clé secrète dans le tableau de bord PayTech, et les ajouter
-   **uniquement** dans Vercel > Settings > Environment Variables : `PAYTECH_API_KEY`, `PAYTECH_API_SECRET`,
-   `PAYTECH_ENV=test`. Jamais dans le code, jamais dans une variable `NEXT_PUBLIC_*`.
-4. **Développement** (à faire par un développeur, environ une journée) :
-   - une route serveur `POST /api/dons` qui valide montant, devise et affectation, enregistre le don « en
-     attente » dans la base (collection `dons`) avec une référence unique, puis appelle `requestPayment()` ;
-   - une route `POST /api/paytech/ipn` qui vérifie la signature avec `verifyIpn()`, contrôle référence, montant,
-     devise et environnement, et **seule** fait passer un don à « payé » (jamais sur la base d'un retour visible
-     dans le navigateur) ;
-   - les pages de retour (merci, annulé) qui affichent l'état lu sur le serveur ;
-   - le formulaire de don (montants en FCFA 2 000 à 50 000 et montant libre, choix de la devise si confirmé) ;
-   - les logos de moyens de paiement, **seulement** ceux confirmés par PayTech (`confirmedPaymentMethods`).
-5. **Essais** en `PAYTECH_ENV=test` : paiement réussi, annulé, échoué, notification rejouée, montant modifié.
-   En mode test, PayTech débite un petit montant (100 à 150 FCFA d'après sa documentation).
-6. **Ouverture** : passer `onlineDonationsEnabled` à `true`, `PAYTECH_ENV=prod`, mettre à jour la page
-   « Conditions de don », la FAQ et la politique de confidentialité, puis faire un vrai don de faible montant.
+| Variable | Valeur |
+|---|---|
+| `PAYTECH_API_KEY` | clé API (tableau de bord PayTech) |
+| `PAYTECH_API_SECRET` | clé secrète (tableau de bord PayTech) |
+| `PAYTECH_ENV` | `test` pour les essais, `prod` une fois le compte activé par PayTech |
+| `NEXT_PUBLIC_SITE_URL` | facultatif : adresse publique en `https://` (sinon le domaine de production Vercel) |
+
+Fonctionnement :
+
+- **Sans ces variables** : la page « Nous soutenir » invite à contacter la fondation (aucun formulaire).
+- **`PAYTECH_ENV=test`** : le formulaire n'est visible **que par les personnes connectées à `/admin`** ; les
+  visiteurs voient toujours « bientôt disponible ». PayTech débite alors un petit montant (100 à 150 FCFA).
+- **`PAYTECH_ENV=prod`** : formulaire ouvert à tous. Nécessite un compte activé par PayTech
+  (contact@paytech.sn, objet « Activation Compte PayTech », NINEA et documents de la fondation).
+
+Parcours : formulaire (montant, devise XOF/EUR/USD/CAD/GBP/MAD, programme ou campagne, nom et e-mail
+facultatifs) → `POST /api/dons` crée le don « en attente » (collection `dons`, référence `FHS-AAAAMMJJ-…`) et
+demande la page de paiement à PayTech → paiement sur paytech.sn → PayTech appelle `POST /api/paytech/ipn`.
+**Seule** cette notification, après vérification de la signature (HMAC ou empreintes SHA-256), de la référence,
+du montant, de la devise et de l'environnement, fait passer le don à « payé ». Les pages
+`/faire-un-don/merci` et `/faire-un-don/annule` affichent l'état lu sur le serveur. Les dons se consultent dans
+`/admin/dons` (administrateurs). Une fiche dont le bouton est « Soutenir la campagne » mène au formulaire avec la
+campagne pré-remplie. Les logos de moyens de paiement ne s'affichent que s'ils sont listés dans
+`confirmedPaymentMethods` (`src/config/donations.ts`), après confirmation écrite de PayTech.
+
+Avant d'ouvrir au public : faire valider par la fondation les « Conditions de don » et la politique de
+confidentialité, puis faire un vrai don de faible montant en `prod` et vérifier qu'il apparaît « Payé ».
 
 ## Logo et images
 

@@ -6,6 +6,7 @@ import { documentCategories, documents, transparencyUpdatedAt } from "@/content/
 import { i18n } from "@/i18n/server";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
+import { paymentMode } from "@/lib/payments/dons";
 
 export async function generateMetadata() {
   const { locale, t } = await i18n();
@@ -26,10 +27,16 @@ export default async function TransparencyPage() {
   const journey = [
     {
       title: t("Réception du don", "Receiving the donation"),
-      text: t(
-        "Le don en ligne n'est pas encore ouvert. Lorsqu'il le sera, le paiement passera par la plateforme sécurisée PayTech, et un don ne sera enregistré comme reçu qu'après confirmation directe de PayTech à notre serveur.",
-        "Online giving is not open yet. When it is, payment will go through the secure PayTech platform, and a donation will only be recorded as received after PayTech confirms it directly to our server.",
-      ),
+      text:
+        paymentMode() === "prod"
+          ? t(
+              "Le paiement en ligne passe par la plateforme sécurisée PayTech. Un don n'est enregistré comme reçu qu'après confirmation directe de PayTech à notre serveur.",
+              "Online payment goes through the secure PayTech platform. A donation is only recorded as received after PayTech confirms it directly to our server.",
+            )
+          : t(
+              "Le don en ligne n'est pas encore ouvert. Lorsqu'il le sera, le paiement passera par la plateforme sécurisée PayTech, et un don ne sera enregistré comme reçu qu'après confirmation directe de PayTech à notre serveur.",
+              "Online giving is not open yet. When it is, payment will go through the secure PayTech platform, and a donation will only be recorded as received after PayTech confirms it directly to our server.",
+            ),
     },
     {
       title: t("Enregistrement et affectation", "Recording and allocation"),

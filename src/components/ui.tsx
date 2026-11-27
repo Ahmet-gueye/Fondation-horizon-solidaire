@@ -4,6 +4,7 @@ import type { Programme } from "@/content/programmes";
 import type { Article } from "@/content/actualites";
 import { formatDate, formatNumber } from "@/lib/format";
 import { i18n } from "@/i18n/server";
+import { paymentMode } from "@/lib/payments/dons";
 import { Icon } from "./Icon";
 import { ExampleBadge, MediaSlot } from "./Markers";
 import { Picture } from "./Picture";
@@ -132,10 +133,15 @@ export async function DonateBand({ title, text }: { title?: string; text?: strin
         <h2>{title ?? t("Votre soutien change des trajectoires", "Your support changes lives")}</h2>
         <p>
           {text ??
-            t(
+            (paymentMode() === "prod"
+              ? t(
+                  "Faites un don en ligne en toute sécurité via la plateforme PayTech, et suivez l'utilisation des fonds sur la page Transparence.",
+                  "Give online securely through the PayTech platform, and follow how funds are used on the Transparency page.",
+                )
+              : t(
               "Le don en ligne ouvrira bientôt. En attendant, contactez la fondation pour savoir comment soutenir ses actions aux côtés des communautés du Sénégal.",
               "Online giving will open soon. In the meantime, contact the foundation to find out how to support its work alongside communities in Senegal.",
-            )}
+            ))}
         </p>
       </div>
       <div className="cta-actions">

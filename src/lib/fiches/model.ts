@@ -194,7 +194,7 @@ export function slugify(text: string) {
 }
 
 /** Adresse du bouton d'appel à l'action. */
-export function ctaHref(f: Pick<FicheData, "cta" | "title">) {
+export function ctaHref(f: Pick<FicheData, "cta" | "title"> & { slug?: string }) {
   if (f.cta.kind === "aucun") return null;
   if (f.cta.url) return f.cta.url;
   const sujet = encodeURIComponent(f.title.slice(0, 100));
@@ -202,7 +202,7 @@ export function ctaHref(f: Pick<FicheData, "cta" | "title">) {
     case "benevole":
       return `/contact?type=benevolat&sujet=${sujet}`;
     case "soutenir":
-      return `/faire-un-don`;
+      return f.slug ? `/faire-un-don?campagne=${encodeURIComponent(f.slug)}` : `/faire-un-don`;
     case "participer":
     case "en_savoir_plus":
     default:

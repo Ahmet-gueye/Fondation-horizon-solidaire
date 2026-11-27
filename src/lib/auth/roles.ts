@@ -18,7 +18,8 @@ export type Permission =
   | "budget.valider"
   | "comptes.gerer"
   | "historique.voir"
-  | "messages.voir";
+  | "messages.voir"
+  | "dons.voir";
 
 const rights: Record<Role, Permission[]> = {
   editeur: ["fiche.creer", "fiche.modifier_non_publiee"],
@@ -33,6 +34,7 @@ const rights: Record<Role, Permission[]> = {
     "comptes.gerer",
     "historique.voir",
     "messages.voir",
+    "dons.voir",
   ],
 };
 

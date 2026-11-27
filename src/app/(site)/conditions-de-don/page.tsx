@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui";
 import { donationConfig } from "@/config/donations";
 import { site } from "@/config/site";
 import { i18n } from "@/i18n/server";
+import { paymentMode } from "@/lib/payments/dons";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -13,25 +14,35 @@ export async function generateMetadata() {
 
 export default async function DonationTermsPage() {
   const { t } = await i18n();
-  const codes = donationConfig.plannedCurrencies.map((c) => c.code).join(", ");
+  const codes = donationConfig.currencies.map((c) => c.code).join(", ");
+  const open = paymentMode() === "prod";
   return (
     <>
       <PageHero title={t("Conditions de don", "Donation terms")} crumbs={[{ label: t("Conditions de don", "Donation terms") }]} />
       <section className="section">
         <div className="container prose">
-          <Notice tone="info" title={t("Dons en ligne pas encore ouverts", "Online giving not open yet")}>
-            <p>
-              {t(
-                "Aucun don ne peut actuellement être encaissé sur ce site. Ces conditions seront complétées et validées par la fondation avant l'ouverture du paiement en ligne.",
-                "No donation can currently be collected on this website. These terms will be completed and approved by the foundation before online payment opens.",
-              )}
-            </p>
-          </Notice>
+          {open ? (
+            <Notice tone="warn" title={t("Texte à faire valider", "Text to be approved")}>
+              <p>{t("Ces conditions sont une base de travail à faire valider par la fondation.", "These terms are a working draft to be approved by the foundation.")}</p>
+            </Notice>
+          ) : (
+            <Notice tone="info" title={t("Dons en ligne pas encore ouverts", "Online giving not open yet")}>
+              <p>
+                {t(
+                  "Aucun don ne peut actuellement être encaissé sur ce site. Ces conditions seront complétées et validées par la fondation avant l'ouverture du paiement en ligne.",
+                  "No donation can currently be collected on this website. These terms will be completed and approved by the foundation before online payment opens.",
+                )}
+              </p>
+            </Notice>
+          )}
           <h2>{t("Objet", "Purpose")}</h2>
-          <p>{t(`Les présentes conditions encadreront les dons effectués en ligne au profit de la ${site.name}.`, `These terms will govern online donations made to ${site.name}.`)}</p>
-          <h2>{t("Paiement prévu", "Planned payment")}</h2>
+          <p>{t(`Les présentes conditions encadrent les dons effectués en ligne au profit de la ${site.name}.`, `These terms govern online donations made to ${site.name}.`)}</p>
+          <h2>{open ? t("Paiement", "Payment") : t("Paiement prévu", "Planned payment")}</h2>
           <p>
-            {t(
+            {open ? t(
+              `Le paiement se fait sur la page sécurisée de la plateforme PayTech. Devises acceptées : ${codes}. Chaque don reçoit une référence unique. Un don n'est considéré comme reçu qu'après confirmation du paiement par PayTech au serveur de la fondation.`,
+              `Payment is made on the secure page of the PayTech platform. Accepted currencies: ${codes}. Each donation receives a unique reference. A donation is only considered received after PayTech confirms the payment to the foundation's server.`,
+            ) : t(
               `Le paiement en ligne passera par la plateforme sécurisée PayTech, une fois le compte de la fondation activé et testé. Les devises envisagées sont : ${codes}. Elles ne sont pas disponibles à ce jour. Un don ne sera considéré comme reçu qu'après confirmation du paiement par PayTech au serveur de la fondation.`,
               `Online payment will go through the secure PayTech platform, once the foundation's account has been activated and tested. The currencies being considered are: ${codes}. They are not available yet. A donation will only be considered received after PayTech confirms the payment to the foundation's server.`,
             )}
@@ -45,10 +56,12 @@ export default async function DonationTermsPage() {
               "Whether receipts can be issued, and any tax benefit, depends on the foundation's actual legal status and on the applicable law. No tax benefit is guaranteed at this stage.",
             )}
           </p>
-          <h2>{t("Soutenir la fondation aujourd'hui", "Supporting the foundation today")}</h2>
+          <h2>{t("Questions et remboursement", "Questions and refunds")}</h2>
           <p>
             <Link href="/contact?type=projet">{t("Contactez la fondation", "Contact the foundation")}</Link>{" "}
-            {t("pour connaître les moyens de soutien possibles pour le moment.", "to find out the ways you can help for now.")}
+            {open
+              ? t("en indiquant la référence de votre don pour toute question ou demande de remboursement.", "with your donation reference for any question or refund request.")
+              : t("pour connaître les moyens de soutien possibles pour le moment.", "to find out the ways you can help for now.")}
           </p>
           <h2>{t("Données personnelles", "Personal data")}</h2>
           <p>{t("Voir la", "See the")} <Link href="/confidentialite">{t("politique de confidentialité", "privacy policy")}</Link>.</p>

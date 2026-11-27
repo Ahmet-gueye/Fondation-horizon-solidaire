@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
       // Anciennes adresses des projets : les projets sont désormais des fiches gérées dans l'administration.
       { source: "/projets", destination: "/activites?type=projet", permanent: true },
       { source: "/projets/:slug", destination: "/activites/:slug", permanent: true },
-      { source: "/faire-un-don/:etape(merci|annule|simulation)", destination: "/faire-un-don", permanent: false },
+      { source: "/faire-un-don/simulation", destination: "/faire-un-don", permanent: false },
     ];
   },
   async headers() {

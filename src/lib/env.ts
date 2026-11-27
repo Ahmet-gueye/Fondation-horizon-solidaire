@@ -6,8 +6,16 @@ import "server-only";
  * (`server-only` provoque une erreur de build si c'est le cas).
  */
 
+/**
+ * Adresse publique du site. Ordre : NEXT_PUBLIC_SITE_URL, puis le domaine de production
+ * fourni automatiquement par Vercel (VERCEL_PROJECT_PRODUCTION_URL), puis localhost.
+ */
 export function getSiteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return `https://${vercel.replace(/^https?:\/\//, "").replace(/\/$/, "")}`;
+  return "http://localhost:3000";
 }
 
 /** Hébergement sans disque persistant (Vercel) : le stockage local n'y est pas utilisable. */
